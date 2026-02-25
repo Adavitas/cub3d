@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zzhyrgal <zzhyrgal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 16:21:40 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/02/25 19:01:07 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/02/22 21:33:17 by zzhyrgal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,44 +16,48 @@
                             //to be a NULL pointer.
 //Uninitialized memory contains garbage.
 
-// memset zeroes every byte → all pointers become NULL, all ints 0,
-// all bools false. No need to set fields individually afterwards.
-// Answering your question: setting a freed pointer to NULL before a
-// second free() call IS safe — free(NULL) is a no-op by the C standard.
-
-void    init_player(t_game *game)
+// Initialize all game state to safe defaults for parsing
+void initialize_player(t_player *player)
 {
-    t_player    *p;
-
-    p = &game->player;
-
-    // Center of tile: tile index 0 occupies [0.0, 1.0], so center is 0.5
-    p->pos_x = p->x + 0.5;
-    p->pos_y = p->y + 0.5;
-
-    if (p->dir == 'N')
-    {
-        p->dir_x = 0;    p->dir_y = -1;
-        p->plane_x = 0.66; p->plane_y = 0;
-    }
-    else if (p->dir == 'S')
-    {
-        p->dir_x = 0;    p->dir_y = 1;
-        p->plane_x = -0.66; p->plane_y = 0;
-    }
-    else if (p->dir == 'E')
-    {
-        p->dir_x = 1;    p->dir_y = 0;
-        p->plane_x = 0;  p->plane_y = 0.66;
-    }
-    else if (p->dir == 'W')
-    {
-        p->dir_x = -1;   p->dir_y = 0;
-        p->plane_x = 0;  p->plane_y = -0.66;
-    }
+    player->player_count = 0;
+    player->x = 0.0f;
+    player->y = 0.0f;
+    player->dir_x = 0.0f;
+    player->dir_y = 0.0f;
+    player->plane_x = 0.0f;
+    player->plane_y = 0.0f;
+    player->p_orientation = '\0';
 }
 
 void init_game(t_game *game)
 {
-    memset(game, 0, sizeof(t_game));
+    int i;
+    
+    ft_bzero(game, sizeof(t_game));// Zero out entire struct first
+    i = 0;
+    while (i < 4)// Initialize texture paths and flags
+    {
+        game->tex[i].path = NULL;
+        game->tex[i].is_set = false;
+        game->tex[i].img = NULL;
+        game->tex[i].addr = NULL;
+        i++;
+    }
+    game->floor.is_set = false;
+    game->ceiling.is_set = false;
+    game->map.grid = NULL;
+    game->map.height = 0;
+    game->map.width = 0;
+    game->map.raw_max_width = 0;
+    game->map_started = false;
+    // Initialize graphics (Leqso's part)
+    game->mlx = NULL;
+    game->win = NULL;
 }
+
+// Note: ft_bzero sets all bytes to 0, which means:
+// - All pointers become NULL
+// - All ints become 0
+// - All bools become false
+// - All floats become 0.0
+// The explicit initializations above are for clarity and safety    
