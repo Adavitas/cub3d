@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   game.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zzhyrgal <zzhyrgal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 12:46:13 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/02/13 12:11:40 by zzhyrgal         ###   ########.fr       */
+/*   Updated: 2026/02/25 18:23:04 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,14 @@
 # include <stdio.h>
 # include <fcntl.h>
 # include <ctype.h>
-# include <map.h>
-# include <parse.h>
-# include <player.h>
 # include <stdbool.h>
-# define false 0;
-# define true 1;
+# include "map.h"
+# include "player.h"
+
+# define SCREEN_W   1280
+# define SCREEN_H   720
+# define TEX_W      64
+# define TEX_H      64
 
 //Central State Struct
 //Game_state owns the map: parse create the map;

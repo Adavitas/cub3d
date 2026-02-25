@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: zzhyrgal <zzhyrgal@student.42.fr>          +#+  +:+       +#+         #
+#    By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2025/08/15 12:39:30 by zzhyrgal          #+#    #+#              #
-#    Updated: 2025/08/16 12:24:44 by zzhyrgal         ###   ########.fr        #
+#    Created: 2026/02/01 21:46:55 by zzhyrgal          #+#    #+#              #
+#    Updated: 2026/02/25 17:18:52 by adavitas         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 

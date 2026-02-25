@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   map.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zzhyrgal <zzhyrgal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/01 21:47:37 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/02/03 13:21:33 by zzhyrgal         ###   ########.fr       */
+/*   Updated: 2026/02/25 17:18:52 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # ifndef MAP_H
 # define MAP_H
-# include <map.h>
+# include <stdlib.h>
 
 typedef struct s_map
 {
