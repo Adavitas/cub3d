@@ -3,51 +3,57 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: zzhyrgal <zzhyrgal@student.42.fr>          +#+  +:+       +#+         #
+#    By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/02/01 21:46:55 by zzhyrgal          #+#    #+#              #
-#    Updated: 2026/02/22 21:33:17 by zzhyrgal         ###   ########.fr        #
+#    Updated: 2026/02/26 18:09:49 by adavitas         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = cub3D
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -cc
-INCLUDES = -I./includes -I./get_in_line -I./libft
+CFLAGS = -Wall -Wextra -Werror
+INCLUDES = -I./includes -I./libraries/get_next_line -I./libraries/libft/src
 
 # Source files
-PARSE_SRC = parsing/parse.c \
-			parsing/parse_color.c \
-			parsing/parse_colors_util.c \
-			parsing/parse_color_utils2.c \
-			parsing/parse_map.c \
-			parsing/parse_map_utils.c \
-			parsing/parse_player.c \
-			parsing/parse_texture.c \
-			parsing/parse_texture_utils.c \
-			parsing/parse_utils.c \
-			parsing/post_validation.c \
-			parsing/post_validation_utils.c
+PARSE_SRC = src/parsing/parse.c \
+			src/parsing/parse_color.c \
+			src/parsing/parse_colors_util.c \
+			src/parsing/parse_color_utils2.c \
+			src/parsing/parse_map.c \
+			src/parsing/parse_map_utils.c \
+			src/parsing/parse_player.c \
+			src/parsing/parse_texture.c \
+			src/parsing/parse_texture_utils.c \
+			src/parsing/parse_utils.c \
+			src/parsing/post_validation.c \
+			src/parsing/post_validation_utils.c
 
-GNL_SRC = get_in_line/get_next_line.c \
-		  get_in_line/get_next_line_utils.c
+GNL_SRC = libraries/get_next_line/get_next_line.c \
+		  libraries/get_next_line/get_next_line_utils.c
 
-UTILS_SRC = utils/utils.c \
-			utils/init.c
+UTILS_SRC = src/utils/utils.c \
+			src/utils/init.c
 
-CLEAN_SRC = clean_up/free_game.c
+PLAYER_SRC = src/player_movement/collision.c \
+			 src/player_movement/move.c \
+			 src/player_movement/player_rotate.c \
+			 src/player_movement/update_player.c
 
-MAIN_SRC = parsing/main_testing.c
+CLEAN_SRC = src/clean_up/free_game.c
+
+MAIN_SRC = src/main.c
 
 # Object files
 PARSE_OBJ = $(PARSE_SRC:.c=.o)
 GNL_OBJ = $(GNL_SRC:.c=.o)
 UTILS_OBJ = $(UTILS_SRC:.c=.o)
+PLAYER_OBJ = $(PLAYER_SRC:.c=.o)
 CLEAN_OBJ = $(CLEAN_SRC:.c=.o)
 MAIN_OBJ = $(MAIN_SRC:.c=.o)
 
-OBJ = $(PARSE_OBJ) $(GNL_OBJ) $(UTILS_OBJ) $(CLEAN_OBJ) $(MAIN_OBJ)
+OBJ = $(PARSE_OBJ) $(GNL_OBJ) $(UTILS_OBJ) $(PLAYER_OBJ) $(CLEAN_OBJ) $(MAIN_OBJ)
 
 # Colors
 GREEN = \033[0;32m
@@ -58,10 +64,13 @@ RESET = \033[0m
 # Rules
 all: $(NAME)
 
-$(NAME): $(OBJ)
+$(NAME): libft $(OBJ)
 	@echo "$(YELLOW)Linking $(NAME)...$(RESET)"
-	@$(CC) $(CFLAGS) $(OBJ) -Llibft -lft -lm -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJ) -Llibraries/libft -lft -lm -o $(NAME)
 	@echo "$(GREEN)✓ $(NAME) compiled successfully!$(RESET)"
+
+libft:
+	@$(MAKE) -C libraries/libft
 
 %.o: %.c
 	@echo "$(YELLOW)Compiling $<...$(RESET)"
@@ -75,6 +84,7 @@ clean:
 fclean: clean
 	@echo "$(RED)Removing $(NAME)...$(RESET)"
 	@rm -f $(NAME)
+	@$(MAKE) -C libraries/libft fclean
 	@echo "$(GREEN)✓ $(NAME) removed$(RESET)"
 
 re: fclean all
@@ -97,4 +107,4 @@ norm:
 	@echo "$(YELLOW)Running norminette...$(RESET)"
 	@norminette parsing/ includes/ utils/ clean_up/ get_in_line/ main_testing.c || true
 
-.PHONY: all clean fclean re test test_all norm
+.PHONY: all clean fclean re test test_all norm libft

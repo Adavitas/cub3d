@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zzhyrgal <zzhyrgal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 13:06:42 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/02/22 21:55:04 by zzhyrgal         ###   ########.fr       */
+/*   Updated: 2026/02/26 18:09:49 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,14 +73,8 @@ typedef struct s_color
     bool is_set;
 }   t_color;
 
-// Forward declarations
+// Forward declaration (t_game is defined in game.h)
 typedef struct s_game t_game;
-typedef struct s_tex t_tex;
-typedef struct s_color t_color;
-// typedef struct s_map t_map;
-typedef struct s_node t_node;
-typedef enum e_text_id t_text_id;
-typedef enum e_color_id t_color_id;
 
 // Main parsing function
 int				parse(const char *file, t_game *game);
@@ -132,9 +126,8 @@ void			free_map_copy(char **map, int height);
 
 // Utility functions
 int				cub_file_check(char *filename);
-int				is_space(char c);
+int				ft_isspace(char c);
 int				is_empty(char *line);
-void			ft_bzero(void *s, size_t n);
 
 // Initialization and cleanup
 void			init_game(t_game *game);

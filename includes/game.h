@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   game.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zzhyrgal <zzhyrgal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 12:46:13 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/02/22 21:54:43 by zzhyrgal         ###   ########.fr       */
+/*   Updated: 2026/02/26 18:09:49 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@
 # include <fcntl.h>
 # include <ctype.h>
 # include "libft.h"
-# include <parse.h>
-# include <player.h>
+# include "parse.h"
+# include "player.h"
 # include <stdbool.h>
 # include <math.h>
 
@@ -41,7 +41,6 @@ typedef struct s_game
 }   t_game;
 
 //only directly game related functions here;
-void ft_bzero(void *s, size_t n);
 void init_game(t_game *game);
 void initialize_player(t_player *player);
 

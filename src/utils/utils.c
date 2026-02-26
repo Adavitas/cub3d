@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zzhyrgal <zzhyrgal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 16:38:28 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/02/22 21:45:02 by zzhyrgal         ###   ########.fr       */
+/*   Updated: 2026/02/26 18:05:58 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,6 @@ int cub_file_check(char *filename)
         && filename[len - 1] == 'b')
             return(1);
     return(0);
-}
-
-void ft_bzero(void *s, size_t n)
-{
-    unsigned char *p = s;
-    while(n--)
-        *p++ = 0;
 }
 
 int ft_isspace(char c)

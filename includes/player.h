@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 16:32:01 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/02/25 19:26:31 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/02/26 18:13:32 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,25 @@ typedef struct s_player
     float plane_y;//camera plane y;
 }   t_player;
 
-// Player setup function
-void set_up_dir_plane(t_player *player);
+// Forward declaration (full definition is in game.h)
+typedef struct s_game t_game;
+
+// Player setup
+void	set_up_dir_plane(t_player *player);
+
+// Movement
+int		move_player(t_game *game, float newx, float newy);
+void	update_player(t_game *game);
+
+// Rotation
+void	rotate_left(t_game *game);
+void	rotate_right(t_game *game);
+
+// Collision
+int		check_collusion(float new_x, float new_y, t_game *game);
+
+// Key hooks
+int		key_press(int key, t_key *key_);
+int		key_release(int key, t_key *key_);
 
 #endif
