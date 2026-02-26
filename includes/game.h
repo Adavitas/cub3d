@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 12:46:13 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/02/26 18:09:49 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/02/26 21:29:14 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,30 +18,49 @@
 # include <stdio.h>
 # include <fcntl.h>
 # include <ctype.h>
+# include <stdbool.h>
+# include <math.h>
+# include "mlx.h"
 # include "libft.h"
 # include "parse.h"
 # include "player.h"
-# include <stdbool.h>
-# include <math.h>
+
+# define WIN_W 1280
+# define WIN_H 720
+# define TEX_W 64
+# define TEX_H 64
+
+// Off-screen pixel buffer written to every frame
+typedef struct s_img
+{
+    void    *img;
+    int     *addr;      // addr[y * WIN_W + x] = 0xRRGGBB
+    int     bpp;
+    int     line_len;
+    int     endian;
+}   t_img;
 
 typedef struct s_game
 {
     //Jibek's variables
-    t_map map; //2d map layout; not a pointer;
-    t_tex tex[4]; //wall appearance info; not a pointer;
-    t_color  floor; //floor appearance; not a pointer;
-    t_color ceiling; //ceiling appearance; not a pointer;
-    bool map_started;//for tracking map parsing;
-    t_player  player;//not a pointer//runtime player state(position, state);
-    t_key key; //runtime input state updates
-    
+    t_map       map;        // 2d map layout
+    t_tex       tex[4];     // wall textures: NO SO WE EA
+    t_color     floor;      // floor colour
+    t_color     ceiling;    // ceiling colour
+    bool        map_started;
+    t_player    player;     // runtime player state
+    t_key       key;        // runtime input state
+
     //Leqso's variables
-    void *mlx;
-    void *win;
+    void        *mlx;
+    void        *win;
+    t_img       screen;     // single image drawn each frame
 }   t_game;
 
-//only directly game related functions here;
-void init_game(t_game *game);
-void initialize_player(t_player *player);
+// Init / cleanup
+void    init_game(t_game *game);
+void    initialize_player(t_player *player);
+int     init_mlx(t_game *game);
+int     close_game(t_game *game);
 
 #endif
