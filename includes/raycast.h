@@ -1,0 +1,64 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   raycast.h                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/01 22:40:19 by adavitas          #+#    #+#             */
+/*   Updated: 2026/03/01 22:42:35 by adavitas         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+
+#ifndef RAYCAST_H
+# define RAYCAST_H
+
+/*
+** t_ray — holds all per-column DDA raycasting state.
+**
+** ray_dir_x/y : direction of the ray in world space
+** side_dist_x/y : distance from player to next grid line
+** delta_dist_x/y : distance between two consecutive grid lines
+** perp_wall_dist : corrected distance to wall (no fish-eye)
+** step_x/y : direction to step in grid (-1 or +1)
+** map_x/y : current grid cell the ray is in
+** side : 0 = vertical wall hit (NS), 1 = horizontal wall hit (EW)
+** tex_id : index into game->tex[4] (NO=0 SO=1 WE=2 EA=3)
+** wall_x : exact fractional hit point on the wall (0.0–1.0)
+** line_h : height of the wall slice to draw on screen
+** draw_start : top pixel of the wall slice
+** draw_end : bottom pixel of the wall slice
+*/
+typedef struct s_ray
+{
+	float	ray_dir_x;
+	float	ray_dir_y;
+	float	side_dist_x;
+	float	side_dist_y;
+	float	delta_dist_x;
+	float	delta_dist_y;
+	float	perp_wall_dist;
+	int		step_x;
+	int		step_y;
+	int		map_x;
+	int		map_y;
+	int		side;
+	int		tex_id;
+	float	wall_x;
+	int		line_h;
+	int		draw_start;
+	int		draw_end;
+}	t_ray;
+
+/* Forward declaration */
+typedef struct s_game	t_game;
+
+/* render.c — drawing wall slices, ceiling, floor */
+void	render_frame(t_game *game);
+
+/* render_utils.c — texture sampling and color helpers */
+int		get_tex_color(t_game *game, t_ray *ray, int tex_y);
+int		rgb_to_int(int r, int g, int b);
+
+#endif

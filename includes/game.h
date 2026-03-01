@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 12:46:13 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/02/26 21:29:14 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/01 22:39:27 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include "libft.h"
 # include "parse.h"
 # include "player.h"
+# include "raycast.h"
 
 # define WIN_W 1280
 # define WIN_H 720
