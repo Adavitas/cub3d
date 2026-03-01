@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   update_player.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zzhyrgal <zzhyrgal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 00:24:30 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/02/22 21:55:58 by zzhyrgal         ###   ########.fr       */
+/*   Updated: 2026/03/01 21:23:17 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,64 +21,48 @@ void update_player(t_game *game)
         move_player(game, -game->player.dir_x * M_SPEED,
                             -game->player.dir_y * M_SPEED);
     if(game->key.a)
-        move_player(game, -game->player.dir_y * M_SPEED,
-                            game->player.dir_x * M_SPEED);
-    if(game->key.d)
         move_player(game, game->player.dir_y * M_SPEED,
                             -game->player.dir_x * M_SPEED);
+    if(game->key.d)
+        move_player(game, -game->player.dir_y * M_SPEED,
+                            game->player.dir_x * M_SPEED);
     if(game->key.LEFT)
         rotate_left(game);
     if(game->key.RIGHT)
         rotate_right(game);
 }
 
-int key_press(int key, t_key *key_)
+int key_press(int key, t_game *game)
 {
-    switch(key)
-    {
-        case W:
-            key_->w = 1;
-            break;
-        case S:
-            key_->s = 1;
-            break;
-        case A:
-            key_->a = 1;
-            break;
-        case D:
-            key_->d = 1;
-            break;
-        case left:
-            key_->LEFT = 1;
-            break;
-        case right:
-            key_->RIGHT = 1;
-            break;
-    }
-    return(0);
+    if (key == 65307)
+        close_game(game);
+    if (key == W)
+        game->key.w = 1;
+    else if (key == S)
+        game->key.s = 1;
+    else if (key == A)
+        game->key.a = 1;
+    else if (key == D)
+        game->key.d = 1;
+    else if (key == left)
+        game->key.LEFT = 1;
+    else if (key == right)
+        game->key.RIGHT = 1;
+    return (0);
 }
-int key_release(int key, t_key *key_)
+int key_release(int key, t_game *game)
 {
-    switch(key)
-    {
-        case W:
-            key_->w = 0;
-            break;
-        case S:
-            key_->s = 0;
-            break;
-        case A:
-            key_->a = 0;
-            break;
-        case D:
-            key_->d = 0;
-            break;
-        case left:
-            key_->LEFT = 0;
-            break;
-        case right:
-            key_->RIGHT = 0;
-            break;
-    }
-    return(0);
+    if (key == W)
+        game->key.w = 0;
+    else if (key == S)
+        game->key.s = 0;
+    else if (key == A)
+        game->key.a = 0;
+    else if (key == D)
+        game->key.d = 0;
+    else if (key == left)
+        game->key.LEFT = 0;
+    else if (key == right)
+        game->key.RIGHT = 0;
+    return (0);
 }

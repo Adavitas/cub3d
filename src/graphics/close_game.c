@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/26 00:00:00 by adavitas          #+#    #+#             */
-/*   Updated: 2026/02/26 21:28:46 by adavitas         ###   ########.fr       */
+/*   Created: 2026/02/26 01:33:05 by adavitas          #+#    #+#             */
+/*   Updated: 2026/03/01 21:17:03 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,11 @@ int	close_game(t_game *game)
 		mlx_destroy_image(game->mlx, game->screen.img);
 	if (game->win)
 		mlx_destroy_window(game->mlx, game->win);
+	if (game->mlx)
+	{
+		mlx_destroy_display(game->mlx);
+		free(game->mlx);
+	}
 	free_game(game);
 	exit(0);
 }

@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 16:32:01 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/02/26 18:13:32 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/01 21:25:52 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@
 # define D  100
 # define left   113
 # define right  114
-// # define up     111//arrows
-// # define down   116//arrows
+# define left   65361
+# define right  65363
 
 typedef struct s_key
 {

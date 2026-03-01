@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zzhyrgal <zzhyrgal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 13:15:27 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/02/22 20:46:51 by zzhyrgal         ###   ########.fr       */
+/*   Updated: 2026/03/01 21:18:12 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,6 @@ t_text_id get_tex_id(char *line)
 
 int select_parse(char *line, t_game *game)
 {
-    int i;
-    i = 0;
     t_text_id tex_id;
     t_color_id color_id;
     

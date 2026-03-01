@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 20:11:03 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/02/26 21:28:35 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/01 21:23:51 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@ int main(int argc, char **argv)
     }
 
     // 3. Register input callbacks
-    mlx_hook(game.win, 2, 1L<<0, (int (*)())key_press, &game.key);
-    mlx_hook(game.win, 3, 1L<<1, (int (*)())key_release, &game.key);
+    mlx_hook(game.win, 2, 1L<<0, (int (*)())key_press, &game);
+    mlx_hook(game.win, 3, 1L<<1, (int (*)())key_release, &game);
     mlx_hook(game.win, 17, 0, (int (*)())close_game, &game);
 
     // 4. Game loop hook (raycaster goes here — Step 3)
