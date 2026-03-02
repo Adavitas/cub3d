@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 12:46:13 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/03/01 22:39:27 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/02 06:03:50 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ typedef struct s_game
 {
     //Jibek's variables
     t_map       map;        // 2d map layout
-    t_tex       tex[4];     // wall textures: NO SO WE EA
+    t_tex       tex[5];     // wall textures: NO SO WE EA + floor
     t_color     floor;      // floor colour
     t_color     ceiling;    // ceiling colour
     bool        map_started;

@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/26 12:10:32 by adavitas          #+#    #+#             */
-/*   Updated: 2026/03/02 04:56:10 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/02 14:17:25 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,10 @@ int	init_mlx(t_game *game)
 	}
 	if (!create_screen_image(game))
 		return (0);
+	game->tex[TEX_FLOOR].path = ft_strdup("./textures/floor_concrete.xpm");
+	game->tex[TEX_FLOOR].is_set = true;
 	i = 0;
-	while (i < 4)
+	while (i < 5)
 	{
 		if (!load_texture(game, i))
 			return (0);

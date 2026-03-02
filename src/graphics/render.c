@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/01 14:34:29 by adavitas          #+#    #+#             */
-/*   Updated: 2026/03/02 04:57:47 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/02 06:03:47 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,18 +30,56 @@ static void	draw_ceiling(t_game *game, int x, int draw_start)
 	}
 }
 
-// Draw the floor region (draw_end to WIN_H) for column x.
+// Draw the textured floor region (draw_end to WIN_H) for column x.
+// Uses floor-casting: for each pixel below the wall, project back
+// into world space and sample the floor texture.
 
-static void	draw_floor(t_game *game, int x, int draw_end)
+static void	draw_floor(t_game *game, t_ray *ray, int x, int draw_end)
 {
-	int	y;
-	int	color;
+	int		y;
+	float	current_dist;
+	float	weight;
+	float	floor_x;
+	float	floor_y;
+	int		tx;
+	int		ty;
+	int		stride;
+	int		tw;
+	int		th;
+	float	wall_fx;
+	float	wall_fy;
 
-	color = rgb_to_int(game->floor.r, game->floor.g, game->floor.b);
+	if (ray->side == 0)
+	{
+		wall_fx = ray->map_x + ray->perp_wall_dist * ray->ray_dir_x;
+		if (ray->ray_dir_x > 0)
+			wall_fx = ray->map_x;
+		else
+			wall_fx = ray->map_x + 1.0f;
+		wall_fy = game->player.y + ray->perp_wall_dist * ray->ray_dir_y;
+	}
+	else
+	{
+		wall_fx = game->player.x + ray->perp_wall_dist * ray->ray_dir_x;
+		if (ray->ray_dir_y > 0)
+			wall_fy = ray->map_y;
+		else
+			wall_fy = ray->map_y + 1.0f;
+	}
+	tw = game->tex[TEX_FLOOR].width;
+	th = game->tex[TEX_FLOOR].height;
+	stride = game->tex[TEX_FLOOR].line_len / 4;
 	y = draw_end + 1;
 	while (y < WIN_H)
 	{
-		game->screen.addr[y * WIN_W + x] = color;
+		current_dist = (float)WIN_H / (2.0f * y - WIN_H);
+		weight = current_dist / ray->perp_wall_dist;
+		floor_x = weight * wall_fx + (1.0f - weight) * game->player.x;
+		floor_y = weight * wall_fy + (1.0f - weight) * game->player.y;
+		tx = (int)(floor_x * tw) & (tw - 1);
+		ty = (int)(floor_y * th) & (th - 1);
+		game->screen.addr[y * WIN_W + x]
+			= game->tex[TEX_FLOOR].addr[ty * stride + tx];
 		y++;
 	}
 }
@@ -92,7 +130,7 @@ void	render_frame(t_game *game)
 		cast_single_ray(game, &ray, x);
 		draw_ceiling(game, x, ray.draw_start);
 		draw_wall_column(game, &ray, x);
-		draw_floor(game, x, ray.draw_end);
+		draw_floor(game, &ray, x, ray.draw_end);
 		x++;
 	}
 	mlx_put_image_to_window(game->mlx, game->win, game->screen.img, 0, 0);
