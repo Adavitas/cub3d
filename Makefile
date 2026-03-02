@@ -6,7 +6,7 @@
 #    By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/02/01 21:46:55 by zzhyrgal          #+#    #+#              #
-#    Updated: 2026/02/26 21:28:49 by adavitas         ###   ########.fr        #
+#    Updated: 2026/03/02 04:20:42 by adavitas         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = cub3D
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
-INCLUDES = -I./includes -I./libraries/get_next_line -I./libraries/libft/src -I./minilibx-linux
+INCLUDES = -I./includes -I./libraries/get_next_line -I./libraries/libft/src -I./libraries/minilibx-linux
 
 # Source files
 PARSE_SRC = src/parsing/parse.c \
@@ -42,7 +42,11 @@ PLAYER_SRC = src/player_movement/collision.c \
 			 src/player_movement/update_player.c
 
 GRAPHICS_SRC = src/graphics/init_mlx.c \
-			 src/graphics/close_game.c
+			 src/graphics/close_game.c \
+			 src/graphics/raycasting.c \
+			 src/graphics/render.c \
+			 src/graphics/render_utils.c \
+			 src/graphics/game_loop.c
 
 CLEAN_SRC = src/clean_up/free_game.c
 
@@ -70,14 +74,14 @@ all: $(NAME)
 
 $(NAME): libft mlx $(OBJ)
 	@echo "$(YELLOW)Linking $(NAME)...$(RESET)"
-	@$(CC) $(CFLAGS) $(OBJ) -Llibraries/libft -lft -Lminilibx-linux -lmlx -lX11 -lXext -lm -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJ) -Llibraries/libft -lft -Llibraries/minilibx-linux -lmlx -lX11 -lXext -lm -o $(NAME)
 	@echo "$(GREEN)✓ $(NAME) compiled successfully!$(RESET)"
 
 libft:
 	@$(MAKE) -C libraries/libft
 
 mlx:
-	@$(MAKE) -C minilibx-linux
+	@$(MAKE) -C libraries/minilibx-linux
 
 %.o: %.c
 	@echo "$(YELLOW)Compiling $<...$(RESET)"
@@ -92,7 +96,7 @@ fclean: clean
 	@echo "$(RED)Removing $(NAME)...$(RESET)"
 	@rm -f $(NAME)
 	@$(MAKE) -C libraries/libft fclean
-	@$(MAKE) -C minilibx-linux clean
+	@$(MAKE) -C libraries/minilibx-linux clean
 	@echo "$(GREEN)✓ $(NAME) removed$(RESET)"
 
 re: fclean all

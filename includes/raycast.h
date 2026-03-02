@@ -6,10 +6,9 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/01 22:40:19 by adavitas          #+#    #+#             */
-/*   Updated: 2026/03/01 22:42:35 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/02 04:13:35 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #ifndef RAYCAST_H
 # define RAYCAST_H
@@ -54,11 +53,17 @@ typedef struct s_ray
 /* Forward declaration */
 typedef struct s_game	t_game;
 
+/* raycasting.c — DDA algorithm */
+void	cast_single_ray(t_game *game, t_ray *ray, int x);
+
 /* render.c — drawing wall slices, ceiling, floor */
 void	render_frame(t_game *game);
 
 /* render_utils.c — texture sampling and color helpers */
 int		get_tex_color(t_game *game, t_ray *ray, int tex_y);
 int		rgb_to_int(int r, int g, int b);
+
+/* game_loop.c — main frame loop */
+int		game_loop(t_game *game);
 
 #endif
