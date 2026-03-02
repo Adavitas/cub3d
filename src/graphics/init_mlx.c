@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/26 12:10:32 by adavitas          #+#    #+#             */
-/*   Updated: 2026/03/01 21:16:16 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/02 04:56:10 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ static int	load_texture(t_game *game, int i)
 		printf("Error\nCould not load texture: %s\n", game->tex[i].path);
 		return (0);
 	}
+	game->tex[i].width = w;
+	game->tex[i].height = h;
 	game->tex[i].addr = (int *)mlx_get_data_addr(game->tex[i].img,
 			&game->tex[i].bpp,
 			&game->tex[i].line_len,

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   player_rotate.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zzhyrgal <zzhyrgal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 18:06:45 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/02/22 21:56:03 by zzhyrgal         ###   ########.fr       */
+/*   Updated: 2026/03/02 04:28:13 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void rotate_left(t_game *game)
     float old_plane_x;
     float rot;
 
-    rot = ROTATE_SPEED;
+    rot = -ROTATE_SPEED;
     old_dir_x = game->player.dir_x;
     old_plane_x = game->player.plane_x;
 
@@ -39,7 +39,7 @@ void rotate_right(t_game *game)
     float old_plane_x;
     float rot;
 
-    rot = -ROTATE_SPEED;
+    rot = ROTATE_SPEED;
     old_dir_x = game->player.dir_x;
     old_plane_x = game->player.plane_x;
 

@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/01 14:34:29 by adavitas          #+#    #+#             */
-/*   Updated: 2026/03/01 22:38:43 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/02 04:57:47 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,20 +57,24 @@ static void	draw_wall_column(t_game *game, t_ray *ray, int x)
 	float	tex_pos;
 	int		y;
 	int		tex_y;
+	int		tw;
+	int		th;
 
-	tex_x = (int)(ray->wall_x * TEX_W);
+	tw = game->tex[ray->tex_id].width;
+	th = game->tex[ray->tex_id].height;
+	tex_x = (int)(ray->wall_x * tw);
 	if ((ray->side == 0 && ray->ray_dir_x > 0)
 		|| (ray->side == 1 && ray->ray_dir_y < 0))
-		tex_x = TEX_W - 1 - tex_x;
-	step = (float)TEX_H / (float)ray->line_h;
+		tex_x = tw - 1 - tex_x;
+	step = (float)th / (float)ray->line_h;
 	tex_pos = (ray->draw_start - WIN_H / 2 + ray->line_h / 2) * step;
 	y = ray->draw_start;
 	while (y <= ray->draw_end)
 	{
-		tex_y = (int)tex_pos & (TEX_H - 1);
+		tex_y = (int)tex_pos & (th - 1);
 		tex_pos += step;
 		game->screen.addr[y * WIN_W + x]
-			= get_tex_color(game, ray, tex_y * TEX_W + tex_x);
+			= get_tex_color(game, ray, tex_x, tex_y);
 		y++;
 	}
 }

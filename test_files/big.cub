@@ -1,7 +1,7 @@
-NO ./textures/north.xpm
-SO ./textures/south.xpm
-WE ./textures/west.xpm
-EA ./textures/east.xpm
+NO ./textures/wall_ironfold.xpm
+SO ./textures/wall_moria.xpm
+WE ./textures/wall_mithrin.xpm
+EA ./textures/wall_gundabad.xpm
 
 F 200,180,160
 C 100,150,200

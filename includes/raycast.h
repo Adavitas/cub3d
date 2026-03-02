@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/01 22:40:19 by adavitas          #+#    #+#             */
-/*   Updated: 2026/03/02 04:13:35 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/02 04:57:47 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	cast_single_ray(t_game *game, t_ray *ray, int x);
 void	render_frame(t_game *game);
 
 /* render_utils.c — texture sampling and color helpers */
-int		get_tex_color(t_game *game, t_ray *ray, int tex_y);
+int		get_tex_color(t_game *game, t_ray *ray, int tex_x, int tex_y);
 int		rgb_to_int(int r, int g, int b);
 
 /* game_loop.c — main frame loop */

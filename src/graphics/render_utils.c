@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/01 14:34:16 by adavitas          #+#    #+#             */
-/*   Updated: 2026/03/01 22:38:05 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/02 04:57:47 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,12 @@ int	rgb_to_int(int r, int g, int b)
 
 
 //Sample one pixel from the texture identified by ray->tex_id.
-// pixel_index = tex_y * TEX_W + tex_x (precomputed by caller).
+// Uses line_len to compute the correct stride (accounts for padding).
 
-int	get_tex_color(t_game *game, t_ray *ray, int pixel_index)
+int	get_tex_color(t_game *game, t_ray *ray, int tex_x, int tex_y)
 {
-	return (game->tex[ray->tex_id].addr[pixel_index]);
+	int	stride;
+
+	stride = game->tex[ray->tex_id].line_len / 4;
+	return (game->tex[ray->tex_id].addr[tex_y * stride + tex_x]);
 }

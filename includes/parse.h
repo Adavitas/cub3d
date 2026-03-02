@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 13:06:42 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/02/26 18:09:49 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/02 04:56:10 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,8 @@ typedef struct s_tex
     //graphics part:
     void *img;
     int *addr;
+    int width;
+    int height;
     int bpp;
     int line_len;
     int endian;

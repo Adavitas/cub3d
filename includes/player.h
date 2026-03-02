@@ -6,14 +6,14 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 16:32:01 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/03/01 22:40:00 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/02 04:32:52 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # ifndef PLAYER_H
 # define PLAYER_H
-# define M_SPEED 0.05
-# define ROTATE_SPEED 0.03
+# define M_SPEED 0.005
+# define ROTATE_SPEED 0.005
 # define PLAYER_RADIUS 0.2
 # define W  119
 # define S  115
