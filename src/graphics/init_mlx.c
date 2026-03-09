@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/26 12:10:32 by adavitas          #+#    #+#             */
-/*   Updated: 2026/03/04 11:54:45 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/09 21:25:45 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ int	init_mlx(t_game *game)
 		return (0);
 	game->tex[TEX_FLOOR].path = ft_strdup("./textures/floor_concrete.xpm");
 	game->tex[TEX_FLOOR].is_set = true;
-	game->tex[TEX_SKY].path = ft_strdup("./textures/sky_tower.xpm");
+	game->tex[TEX_SKY].path = ft_strdup("./textures/sky.xpm");
 	game->tex[TEX_SKY].is_set = true;
 	i = 0;
 	while (i < 6)
