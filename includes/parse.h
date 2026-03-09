@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 13:06:42 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/03/02 06:03:50 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/02 14:56:20 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,8 @@ typedef enum e_text_id
     TEX_WE = 2,
     TEX_EA = 3,
     TEX_FLOOR = 4,
-    TEX_UNKNOWN = 5
+    TEX_SKY = 5,
+    TEX_UNKNOWN = 6
 }   t_text_id;
 
 typedef struct s_tex

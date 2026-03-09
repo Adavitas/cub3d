@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/01 14:34:29 by adavitas          #+#    #+#             */
-/*   Updated: 2026/03/02 06:03:47 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/04 11:35:53 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,37 @@
 #include "game.h"
 
 
-//Draw the ceiling region (row 0 to draw_start) for column x.
+// Draw the sky region (row 0 to draw_start) for column x.
+// Uses perspective-correct vertical mapping: the sky is treated as a dome,
+// so near the horizon the texture compresses naturally (no stretching).
 
-static void	draw_ceiling(t_game *game, int x, int draw_start)
+static void	draw_ceiling(t_game *game, t_ray *ray, int x, int draw_start)
 {
-	int	y;
-	int	color;
+	int		y;
+	int		tx;
+	int		ty;
+	int		stride;
+	int		tw;
+	int		th;
+	float	angle;
 
-	color = rgb_to_int(game->ceiling.r, game->ceiling.g, game->ceiling.b);
+	tw = game->tex[TEX_SKY].width;
+	th = game->tex[TEX_SKY].height;
+	stride = game->tex[TEX_SKY].line_len / 4;
+	angle = atan2f(ray->ray_dir_y, ray->ray_dir_x);
+	if (angle < 0)
+		angle += 2.0f * M_PI;
+	tx = (int)(angle / (2.0f * M_PI) * tw);
+	if (tx >= tw)
+		tx = tw - 1;
 	y = 0;
 	while (y < draw_start)
 	{
-		game->screen.addr[y * WIN_W + x] = color;
+		ty = (int)((float)y / (float)(WIN_H / 2) * (float)(th - 1));
+		if (ty >= th)
+			ty = th - 1;
+		game->screen.addr[y * WIN_W + x]
+			= game->tex[TEX_SKY].addr[ty * stride + tx];
 		y++;
 	}
 }
@@ -41,9 +60,6 @@ static void	draw_floor(t_game *game, t_ray *ray, int x, int draw_end)
 	float	weight;
 	float	floor_x;
 	float	floor_y;
-	int		tx;
-	int		ty;
-	int		stride;
 	int		tw;
 	int		th;
 	float	wall_fx;
@@ -68,7 +84,6 @@ static void	draw_floor(t_game *game, t_ray *ray, int x, int draw_end)
 	}
 	tw = game->tex[TEX_FLOOR].width;
 	th = game->tex[TEX_FLOOR].height;
-	stride = game->tex[TEX_FLOOR].line_len / 4;
 	y = draw_end + 1;
 	while (y < WIN_H)
 	{
@@ -76,10 +91,9 @@ static void	draw_floor(t_game *game, t_ray *ray, int x, int draw_end)
 		weight = current_dist / ray->perp_wall_dist;
 		floor_x = weight * wall_fx + (1.0f - weight) * game->player.x;
 		floor_y = weight * wall_fy + (1.0f - weight) * game->player.y;
-		tx = (int)(floor_x * tw) & (tw - 1);
-		ty = (int)(floor_y * th) & (th - 1);
 		game->screen.addr[y * WIN_W + x]
-			= game->tex[TEX_FLOOR].addr[ty * stride + tx];
+			= apply_fog(sample_tex_bilinear(&game->tex[TEX_FLOOR],
+				floor_x * tw, floor_y * th), current_dist, 16.0f);
 		y++;
 	}
 }
@@ -112,7 +126,8 @@ static void	draw_wall_column(t_game *game, t_ray *ray, int x)
 		tex_y = (int)tex_pos & (th - 1);
 		tex_pos += step;
 		game->screen.addr[y * WIN_W + x]
-			= get_tex_color(game, ray, tex_x, tex_y);
+			= apply_fog(get_tex_color(game, ray, tex_x, tex_y),
+				ray->perp_wall_dist, 16.0f);
 		y++;
 	}
 }
@@ -128,7 +143,7 @@ void	render_frame(t_game *game)
 	while (x < WIN_W)
 	{
 		cast_single_ray(game, &ray, x);
-		draw_ceiling(game, x, ray.draw_start);
+		draw_ceiling(game, &ray, x, ray.draw_start);
 		draw_wall_column(game, &ray, x);
 		draw_floor(game, &ray, x, ray.draw_end);
 		x++;
