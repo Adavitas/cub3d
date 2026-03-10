@@ -6,62 +6,52 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 16:32:01 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/03/02 19:36:45 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/10 00:37:46 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# ifndef PLAYER_H
+#ifndef PLAYER_H
 # define PLAYER_H
 # define M_SPEED 0.01
 # define ROTATE_SPEED 0.01
 # define PLAYER_RADIUS 0.2
-# define W  119
-# define S  115
-# define A  97
-# define D  100
-# define left   65361
-# define right  65363
+# define KEY_W 119
+# define KEY_S 115
+# define KEY_A 97
+# define KEY_D 100
+# define KEY_LEFT 65361
+# define KEY_RIGHT 65363
 
 typedef struct s_key
 {
-    int w;
-    int a;
-    int s;
-    int d;
-    int LEFT;
-    int RIGHT;
-}   t_key;
+	int	w;
+	int	a;
+	int	s;
+	int	d;
+	int	left;
+	int	right;
+}	t_key;
 
 typedef struct s_player
 {
-    int player_count;
-    char p_orientation;
-    float x; // x-coordinate (column position in map, horizontal)
-    float y; // y-coordinate (row position in map, vertical)
-    float dir_x;//direction vector x(where player is facing);
-    float dir_y;//direction vector y;
-    float plane_x;//camera plane x;
-    float plane_y;//camera plane y;
-}   t_player;
+	int		player_count;
+	char	p_orientation;
+	float	x;
+	float	y;
+	float	dir_x;
+	float	dir_y;
+	float	plane_x;
+	float	plane_y;
+}	t_player;
 
-// Forward declaration (full definition is in game.h)
-typedef struct s_game t_game;
+typedef struct s_game	t_game;
 
-// Player setup
 void	set_up_dir_plane(t_player *player);
-
-// Movement
 int		move_player(t_game *game, float newx, float newy);
 void	update_player(t_game *game);
-
-// Rotation
 void	rotate_left(t_game *game);
 void	rotate_right(t_game *game);
-
-// Collision
 int		check_collusion(float new_x, float new_y, t_game *game);
-
-// Key hooks
 int		key_press(int key, t_game *game);
 int		key_release(int key, t_game *game);
 

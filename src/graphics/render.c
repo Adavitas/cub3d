@@ -6,102 +6,98 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/01 14:34:29 by adavitas          #+#    #+#             */
-/*   Updated: 2026/03/04 11:35:53 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/10 00:37:46 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "game.h"
 
-
-// Draw the sky region (row 0 to draw_start) for column x.
-// Uses perspective-correct vertical mapping: the sky is treated as a dome,
-// so near the horizon the texture compresses naturally (no stretching).
-
+/*
+** Draw the sky region (row 0 to draw_start) for column x.
+*/
 static void	draw_ceiling(t_game *game, t_ray *ray, int x, int draw_start)
 {
 	int		y;
 	int		tx;
 	int		ty;
-	int		stride;
-	int		tw;
-	int		th;
 	float	angle;
+	float	ratio;
 
-	tw = game->tex[TEX_SKY].width;
-	th = game->tex[TEX_SKY].height;
-	stride = game->tex[TEX_SKY].line_len / 4;
+	ratio = (float)(game->tex[TEX_SKY].height - 1) / (float)(WIN_H / 2);
 	angle = atan2f(ray->ray_dir_y, ray->ray_dir_x);
 	if (angle < 0)
 		angle += 2.0f * M_PI;
-	tx = (int)(angle / (2.0f * M_PI) * tw);
-	if (tx >= tw)
-		tx = tw - 1;
+	tx = (int)(angle / (2.0f * M_PI) * game->tex[TEX_SKY].width);
+	if (tx >= game->tex[TEX_SKY].width)
+		tx = game->tex[TEX_SKY].width - 1;
 	y = 0;
 	while (y < draw_start)
 	{
-		ty = (int)((float)y / (float)(WIN_H / 2) * (float)(th - 1));
-		if (ty >= th)
-			ty = th - 1;
+		ty = (int)((float)y * ratio);
+		if (ty >= game->tex[TEX_SKY].height)
+			ty = game->tex[TEX_SKY].height - 1;
 		game->screen.addr[y * WIN_W + x]
-			= game->tex[TEX_SKY].addr[ty * stride + tx];
+			= game->tex[TEX_SKY].addr[ty
+			* (game->tex[TEX_SKY].line_len / 4) + tx];
 		y++;
 	}
 }
 
-// Draw the textured floor region (draw_end to WIN_H) for column x.
-// Uses floor-casting: for each pixel below the wall, project back
-// into world space and sample the floor texture.
-
-static void	draw_floor(t_game *game, t_ray *ray, int x, int draw_end)
+/*
+** Compute the wall hit point for floor casting.
+*/
+static void	get_wall_hit(t_game *game, t_ray *ray, float *wfx, float *wfy)
 {
-	int		y;
-	float	current_dist;
-	float	weight;
-	float	floor_x;
-	float	floor_y;
-	int		tw;
-	int		th;
-	float	wall_fx;
-	float	wall_fy;
-
 	if (ray->side == 0)
 	{
-		wall_fx = ray->map_x + ray->perp_wall_dist * ray->ray_dir_x;
 		if (ray->ray_dir_x > 0)
-			wall_fx = ray->map_x;
+			*wfx = ray->map_x;
 		else
-			wall_fx = ray->map_x + 1.0f;
-		wall_fy = game->player.y + ray->perp_wall_dist * ray->ray_dir_y;
+			*wfx = ray->map_x + 1.0f;
+		*wfy = game->player.y + ray->perp_wall_dist * ray->ray_dir_y;
 	}
 	else
 	{
-		wall_fx = game->player.x + ray->perp_wall_dist * ray->ray_dir_x;
+		*wfx = game->player.x + ray->perp_wall_dist * ray->ray_dir_x;
 		if (ray->ray_dir_y > 0)
-			wall_fy = ray->map_y;
+			*wfy = ray->map_y;
 		else
-			wall_fy = ray->map_y + 1.0f;
+			*wfy = ray->map_y + 1.0f;
 	}
-	tw = game->tex[TEX_FLOOR].width;
-	th = game->tex[TEX_FLOOR].height;
+}
+
+/*
+** Draw the textured floor region (draw_end to WIN_H) for column x.
+*/
+static void	draw_floor(t_game *game, t_ray *ray, int x, int draw_end)
+{
+	int		y;
+	float	cd;
+	float	w;
+	float	wf[2];
+	float	fl[2];
+
+	get_wall_hit(game, ray, &wf[0], &wf[1]);
 	y = draw_end + 1;
 	while (y < WIN_H)
 	{
-		current_dist = (float)WIN_H / (2.0f * y - WIN_H);
-		weight = current_dist / ray->perp_wall_dist;
-		floor_x = weight * wall_fx + (1.0f - weight) * game->player.x;
-		floor_y = weight * wall_fy + (1.0f - weight) * game->player.y;
+		cd = (float)WIN_H / (2.0f * y - WIN_H);
+		w = cd / ray->perp_wall_dist;
+		fl[0] = w * wf[0] + (1.0f - w) * game->player.x;
+		fl[1] = w * wf[1] + (1.0f - w) * game->player.y;
 		game->screen.addr[y * WIN_W + x]
-			= apply_fog(sample_tex_bilinear(&game->tex[TEX_FLOOR],
-				floor_x * tw, floor_y * th), current_dist, 16.0f);
+			= apply_fog(sample_tex_bilinear(
+					&game->tex[TEX_FLOOR],
+					fl[0] * game->tex[TEX_FLOOR].width,
+					fl[1] * game->tex[TEX_FLOOR].height),
+				cd, 16.0f);
 		y++;
 	}
 }
 
-// Draw a single textured wall column from draw_start to draw_end.
-// tex_x  : horizontal pixel coordinate within the texture (0..TEX_W-1).
-// step   : how much to advance in texture-Y per screen pixel.
-// tex_pos: current fractional position inside the texture column.
+/*
+** Draw a single textured wall column from draw_start to draw_end.
+*/
 static void	draw_wall_column(t_game *game, t_ray *ray, int x)
 {
 	int		tex_x;
@@ -109,21 +105,17 @@ static void	draw_wall_column(t_game *game, t_ray *ray, int x)
 	float	tex_pos;
 	int		y;
 	int		tex_y;
-	int		tw;
-	int		th;
 
-	tw = game->tex[ray->tex_id].width;
-	th = game->tex[ray->tex_id].height;
-	tex_x = (int)(ray->wall_x * tw);
+	tex_x = (int)(ray->wall_x * game->tex[ray->tex_id].width);
 	if ((ray->side == 0 && ray->ray_dir_x > 0)
 		|| (ray->side == 1 && ray->ray_dir_y < 0))
-		tex_x = tw - 1 - tex_x;
-	step = (float)th / (float)ray->line_h;
+		tex_x = game->tex[ray->tex_id].width - 1 - tex_x;
+	step = (float)game->tex[ray->tex_id].height / (float)ray->line_h;
 	tex_pos = (ray->draw_start - WIN_H / 2 + ray->line_h / 2) * step;
 	y = ray->draw_start;
 	while (y <= ray->draw_end)
 	{
-		tex_y = (int)tex_pos & (th - 1);
+		tex_y = (int)tex_pos & (game->tex[ray->tex_id].height - 1);
 		tex_pos += step;
 		game->screen.addr[y * WIN_W + x]
 			= apply_fog(get_tex_color(game, ray, tex_x, tex_y),
@@ -132,8 +124,9 @@ static void	draw_wall_column(t_game *game, t_ray *ray, int x)
 	}
 }
 
-// render_frame — cast one ray per screen column, draw ceiling + wall + floor.
-// After the loop, flush the completed image to the window in one call.
+/*
+** render_frame - cast one ray per column, draw ceiling + wall + floor.
+*/
 void	render_frame(t_game *game)
 {
 	t_ray	ray;

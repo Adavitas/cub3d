@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/01 22:40:19 by adavitas          #+#    #+#             */
-/*   Updated: 2026/03/02 16:08:52 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/10 00:37:46 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,10 @@ typedef struct s_game	t_game;
 
 /* raycasting.c — DDA algorithm */
 void	cast_single_ray(t_game *game, t_ray *ray, int x);
+
+/* raycasting_utils.c — DDA helpers */
+void	init_dda_x(t_game *game, t_ray *ray);
+void	init_dda_y(t_game *game, t_ray *ray);
 
 /* render.c — drawing wall slices, ceiling, floor */
 void	render_frame(t_game *game);

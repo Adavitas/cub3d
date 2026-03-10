@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/26 12:10:32 by adavitas          #+#    #+#             */
-/*   Updated: 2026/03/09 21:25:45 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/10 00:37:46 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,17 +61,31 @@ static int	create_screen_image(t_game *game)
 }
 
 /*
-** init_mlx — called once from main after parse().
-**  1. mlx_init()        — connects to the X server, returns an mlx handle.
-**  2. mlx_new_window()  — opens a WIN_W x WIN_H window titled "cub3D".
-**  3. create_screen_image() — allocates the off-screen pixel buffer.
-**  4. load_texture() x4 — loads NO / SO / WE / EA XPM files.
-** Returns 1 on success, 0 on any failure.
+** Set up extra texture paths and load all textures.
 */
-int	init_mlx(t_game *game)
+static int	load_all_textures(t_game *game)
 {
 	int	i;
 
+	game->tex[TEX_FLOOR].path = ft_strdup("./textures/floor_concrete.xpm");
+	game->tex[TEX_FLOOR].is_set = true;
+	game->tex[TEX_SKY].path = ft_strdup("./textures/sky.xpm");
+	game->tex[TEX_SKY].is_set = true;
+	i = 0;
+	while (i < 6)
+	{
+		if (!load_texture(game, i))
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+/*
+** init_mlx - connects to X server, opens window, loads textures.
+*/
+int	init_mlx(t_game *game)
+{
 	game->mlx = mlx_init();
 	if (!game->mlx)
 	{
@@ -86,16 +100,5 @@ int	init_mlx(t_game *game)
 	}
 	if (!create_screen_image(game))
 		return (0);
-	game->tex[TEX_FLOOR].path = ft_strdup("./textures/floor_concrete.xpm");
-	game->tex[TEX_FLOOR].is_set = true;
-	game->tex[TEX_SKY].path = ft_strdup("./textures/sky.xpm");
-	game->tex[TEX_SKY].is_set = true;
-	i = 0;
-	while (i < 6)
-	{
-		if (!load_texture(game, i))
-			return (0);
-		i++;
-	}
-	return (1);
+	return (load_all_textures(game));
 }
