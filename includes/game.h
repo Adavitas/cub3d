@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   game.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zzhyrgal <zzhyrgal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 12:46:13 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/03/10 02:18:31 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/10 13:56:00 by zzhyrgal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ typedef struct s_img
 typedef struct s_game
 {
 	t_map		map;
-	t_tex		tex[6];
+	t_tex		tex[7];
 	t_color		floor;
 	t_color		ceiling;
 	bool		map_started;

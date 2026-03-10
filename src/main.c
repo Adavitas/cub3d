@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zzhyrgal <zzhyrgal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 20:11:03 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/03/10 02:21:11 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/10 13:31:08 by zzhyrgal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,16 @@ int	main(int argc, char **argv)
 {
 	t_game	game;
 
-	(void)argc;
+	if(argc != 2)
+	{
+		printf("argument count should be equal to 2.");
+		return(1);
+	}
+	if(!cub_file_check(argv[1]))
+	{
+		printf("file extension validation failed.");
+		return(1);
+	}
 	init_game(&game);
 	if (parse(argv[1], &game))
 	{

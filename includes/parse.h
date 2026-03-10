@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zzhyrgal <zzhyrgal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 13:06:42 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/03/10 00:37:46 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/10 16:34:44 by zzhyrgal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,8 @@ typedef enum e_text_id
 	TEX_EA = 3,
 	TEX_FLOOR = 4,
 	TEX_SKY = 5,
-	TEX_UNKNOWN = 6
+	TEX_DOOR = 6,
+	TEX_UNKNOWN = 7
 }	t_text_id;
 
 typedef struct s_tex
@@ -102,6 +103,8 @@ void			add_back(t_node **head, t_node *new_node);
 void			free_partial_grid(t_game *game, int rows_allocated);
 int				order(t_game *game);
 int				select_parse(char *line, t_game *game);
+char			*creating_new_str(char *line, int start, int end);
+int				dispatch_line(char *line, t_game *game, t_node **raw_map);
 t_color_id		get_color_id(char *line);
 t_text_id		get_tex_id(char *line);
 int				post_validation(t_game *game);

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+         #
+#    By: zzhyrgal <zzhyrgal@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/02/01 21:46:55 by zzhyrgal          #+#    #+#              #
-#    Updated: 2026/03/10 02:41:44 by adavitas         ###   ########.fr        #
+#    Updated: 2026/03/10 16:15:49 by zzhyrgal         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,8 @@ PARSE_SRC = src/parsing/parse.c \
 			src/parsing/parse_texture_utils.c \
 			src/parsing/parse_utils.c \
 			src/parsing/post_validation.c \
-			src/parsing/post_validation_utils.c
+			src/parsing/post_validation_utils.c \
+			src/parsing/parse_dispatch.c
 
 GNL_SRC = libraries/get_next_line/get_next_line.c \
 		  libraries/get_next_line/get_next_line_utils.c
