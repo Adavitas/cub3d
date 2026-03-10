@@ -6,7 +6,7 @@
 #    By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/02/01 21:46:55 by zzhyrgal          #+#    #+#              #
-#    Updated: 2026/03/10 00:37:46 by adavitas         ###   ########.fr        #
+#    Updated: 2026/03/10 02:41:44 by adavitas         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,6 +47,8 @@ GRAPHICS_SRC = src/graphics/init_mlx.c \
 			 src/graphics/raycasting_utils.c \
 			 src/graphics/render.c \
 			 src/graphics/render_utils.c \
+			 src/graphics/minimap.c \
+			 src/graphics/minimap_utils.c \
 			 src/graphics/game_loop.c
 
 CLEAN_SRC = src/clean_up/free_game.c

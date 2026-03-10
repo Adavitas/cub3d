@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_colors_util.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zzhyrgal <zzhyrgal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/10 17:07:44 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/02/22 15:34:05 by zzhyrgal         ###   ########.fr       */
+/*   Updated: 2026/03/10 02:08:34 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@
 //     }
 //     return(0);
 // }
-
 
 //After trimming + shifting, memory becomes:
 //parts[0] = '2       75';//invalid input - reject;

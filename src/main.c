@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 20:11:03 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/03/10 00:37:46 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/10 02:21:11 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,11 @@ int	main(int argc, char **argv)
 
 	(void)argc;
 	init_game(&game);
-	parse(argv[1], &game);
+	if (parse(argv[1], &game))
+	{
+		free_game(&game);
+		return (1);
+	}
 	if (!init_mlx(&game))
 	{
 		free_game(&game);

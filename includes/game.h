@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 12:46:13 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/03/10 00:37:46 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/10 02:18:31 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,9 @@
 # define WIN_H 720
 # define TEX_W 64
 # define TEX_H 64
+# define MAP_W 200
+# define MAP_H 200
+# define MAP_PAD 10
 
 typedef struct s_img
 {

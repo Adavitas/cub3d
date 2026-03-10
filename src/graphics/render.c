@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/01 14:34:29 by adavitas          #+#    #+#             */
-/*   Updated: 2026/03/10 00:37:46 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/10 02:18:31 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,5 +141,6 @@ void	render_frame(t_game *game)
 		draw_floor(game, &ray, x, ray.draw_end);
 		x++;
 	}
+	draw_minimap(game);
 	mlx_put_image_to_window(game->mlx, game->win, game->screen.img, 0, 0);
 }

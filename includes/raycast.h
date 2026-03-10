@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/01 22:40:19 by adavitas          #+#    #+#             */
-/*   Updated: 2026/03/10 00:37:46 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/10 02:41:44 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,10 @@ int		get_tex_color(t_game *game, t_ray *ray, int tex_x, int tex_y);
 int		rgb_to_int(int r, int g, int b);
 int		apply_fog(int color, float distance, float max_dist);
 int		sample_tex_bilinear(t_tex *tex, float fx, float fy);
+
+/* minimap.c + minimap_utils.c — top-left minimap overlay */
+void	draw_minimap(t_game *game);
+void	draw_border(t_game *game, int tsz);
 
 /* game_loop.c — main frame loop */
 int		game_loop(t_game *game);
