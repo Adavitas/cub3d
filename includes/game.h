@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   game.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zzhyrgal <zzhyrgal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 12:46:13 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/03/10 13:56:00 by zzhyrgal         ###   ########.fr       */
+/*   Updated: 2026/03/11 16:46:16 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@
 # define MAP_W 200
 # define MAP_H 200
 # define MAP_PAD 10
+# define MOUSE_SENS 0.001
 
 typedef struct s_img
 {
@@ -55,6 +56,7 @@ typedef struct s_game
 	bool		map_started;
 	t_player	player;
 	t_key		key;
+	int			mouse_active;
 	void		*mlx;
 	void		*win;
 	t_img		screen;

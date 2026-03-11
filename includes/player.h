@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   player.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zzhyrgal <zzhyrgal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 16:32:01 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/03/10 16:44:24 by zzhyrgal         ###   ########.fr       */
+/*   Updated: 2026/03/11 16:46:16 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,13 @@ typedef struct s_game	t_game;
 void	set_up_dir_plane(t_player *player);
 int		move_player(t_game *game, float newx, float newy);
 void	update_player(t_game *game);
+void	rotate_player(t_game *game, float angle);
 void	rotate_left(t_game *game);
 void	rotate_right(t_game *game);
 int		check_collusion(float new_x, float new_y, t_game *game);
 int		key_press(int key, t_game *game);
 int		key_release(int key, t_game *game);
+int		mouse_toggle(int button, int x, int y, t_game *game);
+void	mouse_rotate(t_game *game);
 
 #endif

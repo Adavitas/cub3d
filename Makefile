@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: zzhyrgal <zzhyrgal@student.42.fr>          +#+  +:+       +#+         #
+#    By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/02/01 21:46:55 by zzhyrgal          #+#    #+#              #
-#    Updated: 2026/03/10 16:15:49 by zzhyrgal         ###   ########.fr        #
+#    Updated: 2026/03/11 16:46:16 by adavitas         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,7 +40,8 @@ UTILS_SRC = src/utils/utils.c \
 PLAYER_SRC = src/player_movement/collision.c \
 			 src/player_movement/move.c \
 			 src/player_movement/player_rotate.c \
-			 src/player_movement/update_player.c
+			 src/player_movement/update_player.c \
+			 src/player_movement/mouse_rotate.c
 
 GRAPHICS_SRC = src/graphics/init_mlx.c \
 			 src/graphics/close_game.c \

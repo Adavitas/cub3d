@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zzhyrgal <zzhyrgal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 20:11:03 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/03/10 13:31:08 by zzhyrgal         ###   ########.fr       */
+/*   Updated: 2026/03/11 16:46:16 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ int	main(int argc, char **argv)
 	}
 	mlx_hook(game.win, 2, 1L << 0, (int (*)())key_press, &game);
 	mlx_hook(game.win, 3, 1L << 1, (int (*)())key_release, &game);
+	mlx_hook(game.win, 4, 1L << 2, (int (*)())mouse_toggle, &game);
 	mlx_hook(game.win, 17, 0, (int (*)())close_game, &game);
 	mlx_loop_hook(game.mlx, game_loop, &game);
 	mlx_loop(game.mlx);

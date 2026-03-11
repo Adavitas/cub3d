@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 04:11:44 by adavitas          #+#    #+#             */
-/*   Updated: 2026/03/10 00:37:46 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/11 16:46:16 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 int	game_loop(t_game *game)
 {
 	update_player(game);
+	mouse_rotate(game);
 	render_frame(game);
 	return (0);
 }
