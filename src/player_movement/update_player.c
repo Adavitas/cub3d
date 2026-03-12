@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 00:24:30 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/03/10 00:37:46 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/12 20:25:03 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ int	key_press(int key, t_game *game)
 {
 	if (key == 65307)
 		close_game(game);
+	if (key == KEY_R)
+		toggle_door(game);
 	if (key == KEY_W)
 		game->key.w = 1;
 	else if (key == KEY_S)

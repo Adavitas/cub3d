@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 04:11:52 by adavitas          #+#    #+#             */
-/*   Updated: 2026/03/10 00:37:46 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/12 20:25:03 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,25 @@ static void	init_ray_dir(t_game *game, t_ray *ray, int x)
 }
 
 /*
+** Check if the current cell is a wall or closed door.
+** Returns 1 for wall, 2 for closed door, 0 otherwise.
+*/
+static int	check_hit(t_game *game, t_ray *ray)
+{
+	if (ray->map_y < 0 || ray->map_y >= game->map.height
+		|| ray->map_x < 0 || ray->map_x >= game->map.raw_max_width)
+		return (0);
+	if (game->map.grid[ray->map_y][ray->map_x] == '1')
+		return (1);
+	if (game->map.grid[ray->map_y][ray->map_x] == 'D'
+		&& !game->map.door_open[ray->map_y][ray->map_x])
+		return (2);
+	return (0);
+}
+
+/*
 ** March through the grid one cell at a time (DDA).
-** Stop when we hit a '1' wall tile.
+** Stop when we hit a wall or closed door.
 */
 static void	run_dda(t_game *game, t_ray *ray)
 {
@@ -50,10 +67,7 @@ static void	run_dda(t_game *game, t_ray *ray)
 			ray->map_y += ray->step_y;
 			ray->side = 1;
 		}
-		if (ray->map_y >= 0 && ray->map_y < game->map.height
-			&& ray->map_x >= 0 && ray->map_x < game->map.raw_max_width
-			&& game->map.grid[ray->map_y][ray->map_x] == '1')
-			hit = 1;
+		hit = check_hit(game, ray);
 	}
 }
 
@@ -67,7 +81,11 @@ static void	set_wall_info(t_game *game, t_ray *ray)
 	else
 		ray->wall_x = game->player.x + ray->perp_wall_dist * ray->ray_dir_x;
 	ray->wall_x -= floorf(ray->wall_x);
-	if (ray->side == 0 && ray->ray_dir_x < 0)
+	if (ray->map_y >= 0 && ray->map_y < game->map.height
+		&& ray->map_x >= 0 && ray->map_x < game->map.raw_max_width
+		&& game->map.grid[ray->map_y][ray->map_x] == 'D')
+		ray->tex_id = TEX_DOOR;
+	else if (ray->side == 0 && ray->ray_dir_x < 0)
 		ray->tex_id = TEX_WE;
 	else if (ray->side == 0 && ray->ray_dir_x >= 0)
 		ray->tex_id = TEX_EA;

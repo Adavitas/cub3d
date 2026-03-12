@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/26 12:10:32 by adavitas          #+#    #+#             */
-/*   Updated: 2026/03/10 00:37:46 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/12 20:25:03 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,10 +71,31 @@ static int	load_all_textures(t_game *game)
 	game->tex[TEX_FLOOR].is_set = true;
 	game->tex[TEX_SKY].path = ft_strdup("./textures/sky.xpm");
 	game->tex[TEX_SKY].is_set = true;
+	game->tex[TEX_DOOR].path = ft_strdup("./textures/door_durin.xpm");
+	game->tex[TEX_DOOR].is_set = true;
 	i = 0;
-	while (i < 6)
+	while (i < 7)
 	{
 		if (!load_texture(game, i))
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+static int	init_door_state(t_game *game)
+{
+	int	i;
+
+	game->map.door_open = malloc(sizeof(bool *) * game->map.height);
+	if (!game->map.door_open)
+		return (0);
+	i = 0;
+	while (i < game->map.height)
+	{
+		game->map.door_open[i] = ft_calloc(game->map.raw_max_width,
+				sizeof(bool));
+		if (!game->map.door_open[i])
 			return (0);
 		i++;
 	}
@@ -99,6 +120,8 @@ int	init_mlx(t_game *game)
 		return (0);
 	}
 	if (!create_screen_image(game))
+		return (0);
+	if (!init_door_state(game))
 		return (0);
 	return (load_all_textures(game));
 }

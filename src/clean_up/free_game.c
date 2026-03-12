@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free_game.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zzhyrgal <zzhyrgal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 17:33:13 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/03/10 15:45:22 by zzhyrgal         ###   ########.fr       */
+/*   Updated: 2026/03/12 20:25:03 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,20 @@ void	free_map(t_map *map)
 {
 	int	i;
 
-	if (!map || !map->grid)
+	if (!map)
+		return ;
+	if (map->door_open)
+	{
+		i = 0;
+		while (i < map->height)
+		{
+			free(map->door_open[i]);
+			i++;
+		}
+		free(map->door_open);
+		map->door_open = NULL;
+	}
+	if (!map->grid)
 		return ;
 	i = 0;
 	while (i < map->height)

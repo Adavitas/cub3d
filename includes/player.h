@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 16:32:01 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/03/11 16:46:16 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/12 20:25:03 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 # define KEY_D 100
 # define KEY_LEFT 65361
 # define KEY_RIGHT 65363
+# define KEY_R 114
+# define DOOR_RANGE 1.5f
 
 typedef struct s_key
 {
@@ -57,5 +59,6 @@ int		key_press(int key, t_game *game);
 int		key_release(int key, t_game *game);
 int		mouse_toggle(int button, int x, int y, t_game *game);
 void	mouse_rotate(t_game *game);
+void	toggle_door(t_game *game);
 
 #endif

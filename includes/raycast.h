@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/01 22:40:19 by adavitas          #+#    #+#             */
-/*   Updated: 2026/03/10 02:41:44 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/12 20:25:03 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ int		sample_tex_bilinear(t_tex *tex, float fx, float fy);
 /* minimap.c + minimap_utils.c — top-left minimap overlay */
 void	draw_minimap(t_game *game);
 void	draw_border(t_game *game, int tsz);
+void	draw_tile(t_game *game, int *pos, int tsz, int color);
 
 /* game_loop.c — main frame loop */
 int		game_loop(t_game *game);

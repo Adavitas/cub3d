@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 02:39:29 by adavitas          #+#    #+#             */
-/*   Updated: 2026/03/10 02:43:29 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/12 20:25:03 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,4 +100,33 @@ void	draw_border(t_game *game, int tsz)
 	draw_bg(game, mw, mh);
 	draw_border_h(game, mw, mh, border_col);
 	draw_border_v(game, mw, mh, border_col);
+}
+
+void	draw_tile(t_game *game, int *pos, int tsz, int color)
+{
+	int	px;
+	int	py;
+	int	sx;
+	int	sy;
+
+	py = 0;
+	while (py < tsz)
+	{
+		px = 0;
+		while (px < tsz)
+		{
+			sx = MAP_PAD + pos[0] * tsz + px;
+			sy = MAP_PAD + pos[1] * tsz + py;
+			if (sx < MAP_PAD + MAP_W && sy < MAP_PAD + MAP_H)
+			{
+				if (px == 0 || py == 0)
+					game->screen.addr[sy * WIN_W + sx]
+						= rgb_to_int(8, 8, 12);
+				else
+					game->screen.addr[sy * WIN_W + sx] = color;
+			}
+			px++;
+		}
+		py++;
+	}
 }

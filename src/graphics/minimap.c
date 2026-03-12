@@ -6,40 +6,11 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 02:19:00 by adavitas          #+#    #+#             */
-/*   Updated: 2026/03/10 02:41:44 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/12 20:25:03 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "game.h"
-
-static void	draw_tile(t_game *game, int *pos, int tsz, int color)
-{
-	int	px;
-	int	py;
-	int	sx;
-	int	sy;
-
-	py = 0;
-	while (py < tsz)
-	{
-		px = 0;
-		while (px < tsz)
-		{
-			sx = MAP_PAD + pos[0] * tsz + px;
-			sy = MAP_PAD + pos[1] * tsz + py;
-			if (sx < MAP_PAD + MAP_W && sy < MAP_PAD + MAP_H)
-			{
-				if (px == 0 || py == 0)
-					game->screen.addr[sy * WIN_W + sx]
-						= rgb_to_int(8, 8, 12);
-				else
-					game->screen.addr[sy * WIN_W + sx] = color;
-			}
-			px++;
-		}
-		py++;
-	}
-}
 
 static void	draw_player_dot(t_game *game, int tsz)
 {
@@ -87,29 +58,43 @@ static void	draw_player_dir(t_game *game, int tsz)
 	}
 }
 
+static int	get_tile_color(t_game *game, int mx, int my)
+{
+	int	wall_col;
+
+	wall_col = rgb_to_int(game->ceiling.r / 2 + 40,
+			game->ceiling.g / 2 + 40, game->ceiling.b / 2 + 40);
+	if (game->map.grid[my][mx] == '1')
+		return (wall_col);
+	if (game->map.grid[my][mx] == 'D' && !game->map.door_open[my][mx])
+		return (rgb_to_int(180, 120, 40));
+	if (game->map.grid[my][mx] == 'D' && game->map.door_open[my][mx])
+		return (rgb_to_int(90, 60, 20));
+	if (game->map.grid[my][mx] == '0')
+		return (rgb_to_int(18, 18, 25));
+	return (-1);
+}
+
 static void	draw_map_tiles(t_game *game, int tsz)
 {
 	int	mx;
 	int	my;
 	int	pos[2];
-	int	wall_col;
-	int	floor_col;
+	int	color;
 
-	wall_col = rgb_to_int(game->ceiling.r / 2 + 40,
-			game->ceiling.g / 2 + 40, game->ceiling.b / 2 + 40);
-	floor_col = rgb_to_int(18, 18, 25);
 	my = 0;
 	while (my < game->map.height)
 	{
 		mx = 0;
 		while (mx < game->map.raw_max_width)
 		{
-			pos[0] = mx;
-			pos[1] = my;
-			if (game->map.grid[my][mx] == '1')
-				draw_tile(game, pos, tsz, wall_col);
-			else if (game->map.grid[my][mx] == '0')
-				draw_tile(game, pos, tsz, floor_col);
+			color = get_tile_color(game, mx, my);
+			if (color >= 0)
+			{
+				pos[0] = mx;
+				pos[1] = my;
+				draw_tile(game, pos, tsz, color);
+			}
 			mx++;
 		}
 		my++;

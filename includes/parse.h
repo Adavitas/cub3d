@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 13:06:42 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/03/12 15:32:09 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/12 20:25:03 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 typedef struct s_map
 {
 	char	**grid;
+	bool	**door_open;
 	int		width;
 	int		height;
 	int		raw_max_width;
