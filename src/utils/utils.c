@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 16:38:28 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/03/10 00:37:46 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/12 15:32:09 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,6 @@ int	cub_file_check(char *filename)
 		&& filename[len - 1] == 'b')
 		return (1);
 	return (0);
-}
-
-int	ft_isspace(char c)
-{
-	if (c == ' ' || c == '\t')
-		return (0);
-	return (1);
 }
 
 int	is_empty(char *line)

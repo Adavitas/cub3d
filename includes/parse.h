@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zzhyrgal <zzhyrgal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 13:06:42 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/03/10 16:34:44 by zzhyrgal         ###   ########.fr       */
+/*   Updated: 2026/03/12 15:32:09 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,6 @@ typedef struct s_node
 	char			*line;
 	struct s_node	*next;
 }	t_node;
-
-typedef enum e_state
-{
-	INSIDE_NUM,
-	EXPECT_DIGIT,
-	EXPECT_DIGIT_AFTER_COMMA
-}	t_state;
 
 typedef enum e_color_id
 {
@@ -85,7 +78,6 @@ char			*trim_white_spaces(char *line);
 int				parse_color(char *line, t_color *object);
 char			*delete_white_spaces(char *line);
 int				comma_count(const char *str);
-int				check_digits(char **parts);
 int				checking_functions(char **parts);
 int				col_len_arr(char **parts);
 int				find_start(char *parts);
@@ -109,14 +101,12 @@ t_color_id		get_color_id(char *line);
 t_text_id		get_tex_id(char *line);
 int				post_validation(t_game *game);
 int				validate_chars(t_map *map);
-int				validate_tex_colors(t_game *game);
 int				validate_player(t_game *game);
 int				validate_map(t_game *game);
 int				flood_fill(char **map_copy, int x, int y, int height);
 char			**copy_map(t_map *map);
 void			free_map_copy(char **map, int height);
 int				cub_file_check(char *filename);
-int				ft_isspace(char c);
 int				is_empty(char *line);
 void			init_game(t_game *game);
 void			free_game(t_game *game);

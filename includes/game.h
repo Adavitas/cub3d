@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 12:46:13 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/03/11 16:46:16 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/12 15:32:09 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,6 @@ typedef struct s_game
 }	t_game;
 
 void	init_game(t_game *game);
-void	initialize_player(t_player *player);
 int		init_mlx(t_game *game);
 int		close_game(t_game *game);
 
