@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_colors_util.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zzhyrgal <zzhyrgal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/10 17:07:44 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/03/10 16:14:21 by zzhyrgal         ###   ########.fr       */
+/*   Updated: 2026/03/13 13:21:03 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	find_start(char *parts)
 	int	i;
 
 	i = 0;
-	while (isspace((unsigned char)parts[i]))
+	while (ft_isspace((unsigned char)parts[i]))
 		i++;
 	if (parts[i] == '\0')
 		return (-1);
@@ -34,7 +34,7 @@ int	find_end(char *parts)
 	while (parts[i])
 		i++;
 	i--;
-	while (i > 0 && isspace((unsigned char)parts[i]))
+	while (i > 0 && ft_isspace((unsigned char)parts[i]))
 		i--;
 	if (i < 0)
 		return (-1);
@@ -48,7 +48,7 @@ int	shift_memory(char *parts, int start, int end)
 	i = 0;
 	while (start <= end)
 	{
-		if (!isdigit((unsigned char)parts[start]))
+		if (!ft_isdigit((unsigned char)parts[start]))
 			return (1);
 		parts[i] = parts[start];
 		start++;

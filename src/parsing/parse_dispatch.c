@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_dispatch.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zzhyrgal <zzhyrgal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 16:00:00 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/03/10 16:10:22 by zzhyrgal         ###   ########.fr       */
+/*   Updated: 2026/03/13 13:21:22 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int	dispatch_line(char *line, t_game *game, t_node **raw_map)
 	int	i;
 
 	i = 0;
-	while (isspace(line[i]))
+	while (ft_isspace(line[i]))
 		i++;
 	if (order(game) != 0)
 	{

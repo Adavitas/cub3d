@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_texture_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zzhyrgal <zzhyrgal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/14 18:47:31 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/03/10 16:14:21 by zzhyrgal         ###   ########.fr       */
+/*   Updated: 2026/03/13 13:22:01 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char	*trim_white_spaces(char *line)
 
 	if (!line)
 		return (NULL);
-	while (*line && isspace(*line))
+	while (*line && ft_isspace(*line))
 		line++;
 	if (*line == '\0')
 		return (line);
@@ -28,7 +28,7 @@ char	*trim_white_spaces(char *line)
 	while (*end)
 		end++;
 	end--;
-	while (end > start && isspace(*end))
+	while (end > start && ft_isspace(*end))
 		end--;
 	*(end + 1) = '\0';
 	return (start);
@@ -43,7 +43,7 @@ int	check_spaces_path(char *path)
 	i = 0;
 	while (path[i])
 	{
-		if (isspace(path[i]))
+		if (ft_isspace(path[i]))
 			return (1);
 		i++;
 	}

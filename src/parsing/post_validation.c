@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   post_validation.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zzhyrgal <zzhyrgal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 21:01:21 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/03/10 16:14:21 by zzhyrgal         ###   ########.fr       */
+/*   Updated: 2026/03/13 13:23:15 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ int	validate_player(t_game *game)
 	col = (int)game->player.x;
 	if (row < 0 || col < 0 || row >= game->map.height)
 		return (1);
-	row_len = strlen(game->map.grid[row]);
+	row_len = ft_strlen(game->map.grid[row]);
 	if (col >= row_len)
 		return (1);
 	return (0);

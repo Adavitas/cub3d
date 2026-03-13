@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_texture.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zzhyrgal <zzhyrgal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 17:34:26 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/03/10 16:10:22 by zzhyrgal         ###   ########.fr       */
+/*   Updated: 2026/03/13 13:22:14 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ static char	*extract_path(char *line)
 	if (!line)
 		return (NULL);
 	i = 0;
-	while (line[i] && !isspace(line[i]))
+	while (line[i] && !ft_isspace(line[i]))
 		i++;
-	while (line[i] && isspace(line[i]))
+	while (line[i] && ft_isspace(line[i]))
 		i++;
 	path = &line[i];
 	if (!path || *path == '\0')

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_color.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zzhyrgal <zzhyrgal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 17:34:15 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/03/10 16:10:22 by zzhyrgal         ###   ########.fr       */
+/*   Updated: 2026/03/13 13:20:11 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,9 @@ static char	*extract_rgb_string(char *line)
 	int	i;
 
 	i = 0;
-	while (line[i] && !isspace(line[i]))
+	while (line[i] && !ft_isspace(line[i]))
 		i++;
-	while (line[i] && isspace(line[i]))
+	while (line[i] && ft_isspace(line[i]))
 		i++;
 	return (delete_white_spaces(&line[i]));
 }

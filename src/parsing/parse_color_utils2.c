@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_color_utils2.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zzhyrgal <zzhyrgal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/22 15:31:30 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/03/10 16:17:30 by zzhyrgal         ###   ########.fr       */
+/*   Updated: 2026/03/13 13:20:35 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,13 @@ char	*delete_white_spaces(char *line)
 	i = 0;
 	if (!line)
 		return (NULL);
-	while (line[i] && isspace(line[i]))
+	while (line[i] && ft_isspace(line[i]))
 		i++;
 	start = i;
 	if (line[start] == '\0')
 		return (ft_strdup(""));
 	i = ft_strlen(line) - 1;
-	while (line[i] && isspace(line[i]))
+	while (line[i] && ft_isspace(line[i]))
 		i--;
 	new_str = creating_new_str(line, start, i);
 	if (!new_str)

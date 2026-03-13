@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zzhyrgal <zzhyrgal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 13:15:27 by zzhyrgal          #+#    #+#             */
-/*   Updated: 2026/03/10 16:06:09 by zzhyrgal         ###   ########.fr       */
+/*   Updated: 2026/03/13 13:22:39 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,11 @@ t_color_id	get_color_id(char *line)
 	int	i;
 
 	i = 0;
-	while (isspace(line[i]))
+	while (ft_isspace(line[i]))
 		i++;
-	if (line[i] == 'F' && isspace(line[i + 1]))
+	if (line[i] == 'F' && ft_isspace(line[i + 1]))
 		return (COLOR_FLOOR);
-	else if (line[i] == 'C' && isspace(line[i + 1]))
+	else if (line[i] == 'C' && ft_isspace(line[i + 1]))
 		return (COLOR_CEILING);
 	else
 		return (COLOR_UNKNOWN);
@@ -46,17 +46,17 @@ t_text_id	get_tex_id(char *line)
 	int	i;
 
 	i = 0;
-	while (isspace(line[i]))
+	while (ft_isspace(line[i]))
 		i++;
-	if (line[i] == 'N' && line[i + 1] == 'O' && isspace(line[i + 2]))
+	if (line[i] == 'N' && line[i + 1] == 'O' && ft_isspace(line[i + 2]))
 		return (TEX_NO);
-	if (line[i] == 'S' && line[i + 1] == 'O' && isspace(line[i + 2]))
+	if (line[i] == 'S' && line[i + 1] == 'O' && ft_isspace(line[i + 2]))
 		return (TEX_SO);
-	if (line[i] == 'W' && line[i + 1] == 'E' && isspace(line[i + 2]))
+	if (line[i] == 'W' && line[i + 1] == 'E' && ft_isspace(line[i + 2]))
 		return (TEX_WE);
-	if (line[i] == 'E' && line[i + 1] == 'A' && isspace(line[i + 2]))
+	if (line[i] == 'E' && line[i + 1] == 'A' && ft_isspace(line[i + 2]))
 		return (TEX_EA);
-	if (line[i] == 'D' && line[i + 1] == 'O' && isspace(line[i + 2]))
+	if (line[i] == 'D' && line[i + 1] == 'O' && ft_isspace(line[i + 2]))
 		return (TEX_DOOR);
 	return (TEX_UNKNOWN);
 }
