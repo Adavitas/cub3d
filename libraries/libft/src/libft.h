@@ -6,7 +6,7 @@
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 10:32:32 by adavitas          #+#    #+#             */
-/*   Updated: 2026/03/13 14:54:46 by adavitas         ###   ########.fr       */
+/*   Updated: 2026/03/13 15:27:02 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int					ft_isdigit(int c);
 int					ft_isalnum(int c);
 int					ft_isascii(int c);
 int					ft_isprint(int c);
-int 				ft_isspace(int c);
+int					ft_isspace(int c);
 
 void				ft_bzero(void *s, size_t n);
 size_t				ft_strlen(const char *s);
