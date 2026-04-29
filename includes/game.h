@@ -117,6 +117,8 @@ void	init_game(t_game *game);
 int		init_mlx(t_game *game);
 int		close_game(t_game *game);
 int		init_wand(t_game *game);
+int		fail_mlx_init(t_game *game);
+void	destroy_mlx_resources(t_game *game);
 void	destroy_wand_images(t_game *game);
 void	free_wand(t_wand *wand);
 

@@ -20,25 +20,7 @@
 */
 int	close_game(t_game *game)
 {
-	int	i;
-
-	i = 0;
-	while (i < 7)
-	{
-		if (game->tex[i].img)
-			mlx_destroy_image(game->mlx, game->tex[i].img);
-		i++;
-	}
-	destroy_wand_images(game);
-	if (game->screen.img)
-		mlx_destroy_image(game->mlx, game->screen.img);
-	if (game->win)
-		mlx_destroy_window(game->mlx, game->win);
-	if (game->mlx)
-	{
-		mlx_destroy_display(game->mlx);
-		free(game->mlx);
-	}
+	destroy_mlx_resources(game);
 	free_game(game);
 	exit(0);
 }

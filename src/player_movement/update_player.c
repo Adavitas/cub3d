@@ -38,8 +38,11 @@ int	key_press(int key, t_game *game)
 		close_game(game);
 	if (key == KEY_R)
 		toggle_door(game);
-	if (key == KEY_F)
+	if (key == KEY_F && !game->key.f)
+	{
 		toggle_wand(game);
+		game->key.f = 1;
+	}
 	if (key == KEY_W)
 		game->key.w = 1;
 	else if (key == KEY_S)
@@ -69,5 +72,7 @@ int	key_release(int key, t_game *game)
 		game->key.left = 0;
 	else if (key == KEY_RIGHT)
 		game->key.right = 0;
+	else if (key == KEY_F)
+		game->key.f = 0;
 	return (0);
 }

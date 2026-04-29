@@ -87,7 +87,7 @@ static int	init_door_state(t_game *game)
 {
 	int	i;
 
-	game->map.door_open = malloc(sizeof(bool *) * game->map.height);
+	game->map.door_open = ft_calloc(game->map.height, sizeof(bool *));
 	if (!game->map.door_open)
 		return (0);
 	i = 0;
@@ -117,13 +117,15 @@ int	init_mlx(t_game *game)
 	if (!game->win)
 	{
 		printf("Error\nCould not open window.\n");
-		return (0);
+		return (fail_mlx_init(game));
 	}
 	if (!create_screen_image(game))
-		return (0);
+		return (fail_mlx_init(game));
 	if (!init_door_state(game))
-		return (0);
+		return (fail_mlx_init(game));
 	if (!load_all_textures(game))
-		return (0);
-	return (init_wand(game));
+		return (fail_mlx_init(game));
+	if (!init_wand(game))
+		return (fail_mlx_init(game));
+	return (1);
 }

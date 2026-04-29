@@ -33,6 +33,7 @@ typedef struct s_key
 	int	d;
 	int	left;
 	int	right;
+	int	f;
 }	t_key;
 
 typedef struct s_player

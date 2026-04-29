@@ -47,6 +47,7 @@ PLAYER_SRC = src/player_movement/collision.c \
 
 GRAPHICS_SRC = src/graphics/init_mlx.c \
 			 src/graphics/close_game.c \
+			 src/graphics/mlx_cleanup.c \
 			 src/graphics/raycasting.c \
 			 src/graphics/raycasting_utils.c \
 			 src/graphics/render.c \
