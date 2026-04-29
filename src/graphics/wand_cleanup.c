@@ -1,28 +1,45 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   game_loop.c                                        :+:      :+:    :+:   */
+/*   wand_cleanup.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adavitas <adavitas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/02 04:11:44 by adavitas          #+#    #+#             */
-/*   Updated: 2026/03/11 16:46:16 by adavitas         ###   ########.fr       */
+/*   Created: 2026/04/29 12:00:00 by adavitas          #+#    #+#             */
+/*   Updated: 2026/04/29 12:00:00 by adavitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "game.h"
 
-/*
-** game_loop — called every frame by mlx_loop_hook.
-**  1) Process held-down keys (movement + rotation).
-**  2) Cast rays and render the 3D view into the off-screen buffer.
-** Returns 0 to satisfy mlx callback signature.
-*/
-int	game_loop(t_game *game)
+void	destroy_wand_images(t_game *game)
 {
-	update_player(game);
-	mouse_rotate(game);
-	update_wand(game);
-	render_frame(game);
-	return (0);
+	int	i;
+
+	i = 0;
+	while (i < WAND_FRAME_COUNT)
+	{
+		if (game->wand.frame[i].img)
+		{
+			mlx_destroy_image(game->mlx, game->wand.frame[i].img);
+			game->wand.frame[i].img = NULL;
+		}
+		i++;
+	}
+}
+
+void	free_wand(t_wand *wand)
+{
+	int	i;
+
+	i = 0;
+	while (i < WAND_FRAME_COUNT)
+	{
+		if (wand->frame[i].path)
+		{
+			free(wand->frame[i].path);
+			wand->frame[i].path = NULL;
+		}
+		i++;
+	}
 }

@@ -17,6 +17,7 @@ void	free_game(t_game *game)
 	if (!game)
 		return ;
 	free_tex(game->tex);
+	free_wand(&game->wand);
 	free_map(&game->map);
 }
 

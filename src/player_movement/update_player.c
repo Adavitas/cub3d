@@ -38,6 +38,8 @@ int	key_press(int key, t_game *game)
 		close_game(game);
 	if (key == KEY_R)
 		toggle_door(game);
+	if (key == KEY_F)
+		toggle_wand(game);
 	if (key == KEY_W)
 		game->key.w = 1;
 	else if (key == KEY_S)

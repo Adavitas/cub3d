@@ -42,7 +42,8 @@ PLAYER_SRC = src/player_movement/collision.c \
 			 src/player_movement/player_rotate.c \
 			 src/player_movement/update_player.c \
 			 src/player_movement/mouse_rotate.c \
-			 src/player_movement/door.c
+			 src/player_movement/door.c \
+			 src/player_movement/wand_state.c
 
 GRAPHICS_SRC = src/graphics/init_mlx.c \
 			 src/graphics/close_game.c \
@@ -50,6 +51,11 @@ GRAPHICS_SRC = src/graphics/init_mlx.c \
 			 src/graphics/raycasting_utils.c \
 			 src/graphics/render.c \
 			 src/graphics/render_utils.c \
+			 src/graphics/render_light.c \
+			 src/graphics/render_light_utils.c \
+			 src/graphics/wand.c \
+			 src/graphics/wand_resources.c \
+			 src/graphics/wand_cleanup.c \
 			 src/graphics/minimap.c \
 			 src/graphics/minimap_utils.c \
 			 src/graphics/game_loop.c

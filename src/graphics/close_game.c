@@ -29,6 +29,7 @@ int	close_game(t_game *game)
 			mlx_destroy_image(game->mlx, game->tex[i].img);
 		i++;
 	}
+	destroy_wand_images(game);
 	if (game->screen.img)
 		mlx_destroy_image(game->mlx, game->screen.img);
 	if (game->win)

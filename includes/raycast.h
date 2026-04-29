@@ -62,11 +62,18 @@ void	init_dda_y(t_game *game, t_ray *ray);
 
 /* render.c — drawing wall slices, ceiling, floor */
 void	render_frame(t_game *game);
+void	draw_wand(t_game *game);
 
 /* render_utils.c — texture sampling and color helpers */
 int		get_tex_color(t_game *game, t_ray *ray, int tex_x, int tex_y);
 int		rgb_to_int(int r, int g, int b);
 int		apply_fog(int color, float distance, float max_dist);
+int		apply_wand_fog(t_game *game, int color, float distance, int y);
+int		apply_wand_sky(t_game *game, int color, int y);
+int		light_clamp_channel(int value);
+float	light_clamp_float(float value, float min, float max);
+float	wand_state_light(t_game *game);
+int		add_warm_light(int color, float power);
 int		sample_tex_bilinear(t_tex *tex, float fx, float fy);
 
 /* minimap.c + minimap_utils.c — top-left minimap overlay */

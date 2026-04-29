@@ -123,5 +123,7 @@ int	init_mlx(t_game *game)
 		return (0);
 	if (!init_door_state(game))
 		return (0);
-	return (load_all_textures(game));
+	if (!load_all_textures(game))
+		return (0);
+	return (init_wand(game));
 }

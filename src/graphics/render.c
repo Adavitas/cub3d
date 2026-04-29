@@ -36,9 +36,9 @@ static void	draw_ceiling(t_game *game, t_ray *ray, int x, int draw_start)
 		ty = (int)((float)y * ratio);
 		if (ty >= game->tex[TEX_SKY].height)
 			ty = game->tex[TEX_SKY].height - 1;
-		game->screen.addr[y * WIN_W + x]
-			= game->tex[TEX_SKY].addr[ty
-			* (game->tex[TEX_SKY].line_len / 4) + tx];
+		game->screen.addr[y * WIN_W + x] = apply_wand_sky(game,
+				game->tex[TEX_SKY].addr[ty
+				* (game->tex[TEX_SKY].line_len / 4) + tx], y);
 		y++;
 	}
 }
@@ -86,11 +86,11 @@ static void	draw_floor(t_game *game, t_ray *ray, int x, int draw_end)
 		fl[0] = w * wf[0] + (1.0f - w) * game->player.x;
 		fl[1] = w * wf[1] + (1.0f - w) * game->player.y;
 		game->screen.addr[y * WIN_W + x]
-			= apply_fog(sample_tex_bilinear(
+			= apply_wand_fog(game, sample_tex_bilinear(
 					&game->tex[TEX_FLOOR],
 					fl[0] * game->tex[TEX_FLOOR].width,
 					fl[1] * game->tex[TEX_FLOOR].height),
-				cd, 16.0f);
+				cd, y);
 		y++;
 	}
 }
@@ -118,8 +118,8 @@ static void	draw_wall_column(t_game *game, t_ray *ray, int x)
 		tex_y = (int)tex_pos & (game->tex[ray->tex_id].height - 1);
 		tex_pos += step;
 		game->screen.addr[y * WIN_W + x]
-			= apply_fog(get_tex_color(game, ray, tex_x, tex_y),
-				ray->perp_wall_dist, 16.0f);
+			= apply_wand_fog(game, get_tex_color(game, ray, tex_x, tex_y),
+				ray->perp_wall_dist, y);
 		y++;
 	}
 }
@@ -142,5 +142,6 @@ void	render_frame(t_game *game)
 		x++;
 	}
 	draw_minimap(game);
+	draw_wand(game);
 	mlx_put_image_to_window(game->mlx, game->win, game->screen.img, 0, 0);
 }
