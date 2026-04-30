@@ -12,53 +12,6 @@
 
 #include "game.h"
 
-static void	put_wand_pixel(t_game *game, int x, int y, int color)
-{
-	int	stride;
-
-	if ((color & 0x00FFFFFF) == WAND_TRANSPARENT_COLOR)
-		return ;
-	if (x < 0 || y < 0 || x >= WIN_W || y >= WIN_H)
-		return ;
-	stride = game->screen.line_len / 4;
-	game->screen.addr[y * stride + x] = color;
-}
-
-static void	draw_scaled_pixel(t_game *game, t_tex *frame, int *pos, int *src)
-{
-	int	color;
-	int	scale[2];
-	int	dst[2];
-
-	color = frame->addr[src[1] * (frame->line_len / 4) + src[0]];
-	scale[1] = 0;
-	while (scale[1] < WAND_SCALE)
-	{
-		scale[0] = 0;
-		while (scale[0] < WAND_SCALE)
-		{
-			dst[0] = pos[0] + src[0] * WAND_SCALE + scale[0];
-			dst[1] = pos[1] + src[1] * WAND_SCALE + scale[1];
-			put_wand_pixel(game, dst[0], dst[1], color);
-			scale[0]++;
-		}
-		scale[1]++;
-	}
-}
-
-static void	draw_wand_row(t_game *game, t_tex *frame, int *pos, int row)
-{
-	int	src[2];
-
-	src[0] = 0;
-	src[1] = row;
-	while (src[0] < frame->width)
-	{
-		draw_scaled_pixel(game, frame, pos, src);
-		src[0]++;
-	}
-}
-
 static void	get_wand_pos(t_game *game, t_tex *frame, int *pos)
 {
 	int	draw_w;
@@ -66,25 +19,47 @@ static void	get_wand_pos(t_game *game, t_tex *frame, int *pos)
 
 	draw_w = frame->width * WAND_SCALE;
 	draw_h = frame->height * WAND_SCALE;
-	pos[0] = (WIN_W - draw_w) / 2 + (int)game->wand.bob_x;
+	pos[0] = (WIN_W - draw_w) / 2 + WAND_X_OFFSET
+		+ (int)game->wand.bob_x;
 	pos[1] = WIN_H - draw_h - WAND_BOTTOM_MARGIN
-		+ (int)game->wand.bob_y;
+		+ WAND_Y_OFFSET + (int)game->wand.bob_y;
+}
+
+static void	set_clip_axis(int pos, int len, int limit, int *clip)
+{
+	clip[0] = 0;
+	clip[1] = len;
+	if (pos < 0)
+		clip[0] = (-pos + WAND_SCALE - 1) / WAND_SCALE;
+	if (pos + len * WAND_SCALE > limit)
+		clip[1] = (limit - pos + WAND_SCALE - 1) / WAND_SCALE;
+	if (clip[0] < 0)
+		clip[0] = 0;
+	if (clip[1] > len)
+		clip[1] = len;
+}
+
+static void	set_wand_clip(t_tex *frame, int *pos, int *clip)
+{
+	set_clip_axis(pos[0], frame->width, WIN_W, &clip[0]);
+	set_clip_axis(pos[1], frame->height, WIN_H, &clip[2]);
 }
 
 void	draw_wand(t_game *game)
 {
 	t_tex	*frame;
 	int		pos[2];
-	int		row;
+	int		clip[4];
 
 	frame = &game->wand.frame[game->wand.frame_id];
 	if (!frame->img || !frame->addr)
 		return ;
 	get_wand_pos(game, frame, pos);
-	row = 0;
-	while (row < frame->height)
-	{
-		draw_wand_row(game, frame, pos, row);
-		row++;
-	}
+	set_wand_clip(frame, pos, clip);
+	if (clip[0] >= clip[1] || clip[2] >= clip[3])
+		return ;
+	if (WAND_SCALE == 1)
+		draw_wand_unscaled(game, frame, pos, clip);
+	else
+		draw_wand_scaled(game, frame, pos, clip);
 }

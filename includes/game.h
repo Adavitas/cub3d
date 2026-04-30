@@ -37,8 +37,10 @@
 # define MAP_PAD 10
 # define MOUSE_SENS 0.001
 # define WAND_FRAME_COUNT 6
-# define WAND_SCALE 8
+# define WAND_SCALE 1
 # define WAND_BOTTOM_MARGIN 24
+# define WAND_X_OFFSET 120
+# define WAND_Y_OFFSET 24
 # define WAND_TURN_TICKS 6
 # define WAND_FLICKER_TICKS 18
 # define WAND_BOB_SPEED 24.0f
@@ -47,15 +49,22 @@
 # define WAND_BOB_RETURN 0.82f
 # define WAND_MOVE_EPSILON 0.00005f
 # define WAND_TRANSPARENT_COLOR 0x00FF00FF
-# define RENDER_FOG_DIST 16.0f
-# define WAND_LIGHT_RANGE 7.0f
-# define WAND_LIGHT_POWER 0.70f
+# define WAND_KEY_R_MIN 210
+# define WAND_KEY_G_MAX 90
+# define WAND_KEY_B_MIN 210
+# define WAND_LIGHT_MIN 0.001f
+# define RENDER_DARK_FOG_DIST 8.0f
+# define RENDER_LIT_FOG_DIST 18.0f
+# define WAND_DARK_AMBIENT 0.38f
+# define WAND_LIT_AMBIENT 0.86f
+# define WAND_LIGHT_RANGE 10.0f
+# define WAND_LIGHT_POWER 1.15f
 # define WAND_LIGHT_CENTER_Y 0.68f
-# define WAND_LIGHT_SCREEN_RANGE 0.72f
-# define WAND_LIGHT_R 58
-# define WAND_LIGHT_G 36
-# define WAND_LIGHT_B 8
-# define WAND_SKY_POWER 0.16f
+# define WAND_LIGHT_SCREEN_RANGE 0.78f
+# define WAND_LIGHT_R 95
+# define WAND_LIGHT_G 68
+# define WAND_LIGHT_B 20
+# define WAND_SKY_POWER 0.32f
 
 typedef struct s_img
 {
@@ -90,6 +99,7 @@ typedef struct s_wand
 	t_tex			frame[WAND_FRAME_COUNT];
 	int				frame_id;
 	int				anim_tick;
+	float			light_level;
 	float			phase;
 	float			bob_x;
 	float			bob_y;
@@ -97,20 +107,30 @@ typedef struct s_wand
 	float			last_y;
 }	t_wand;
 
+typedef struct s_light_cache
+{
+	float	level;
+	float	fog_dist;
+	float	ambient;
+	float	sky_power;
+	float	screen_falloff[WIN_H];
+}	t_light_cache;
+
 typedef struct s_game
 {
-	t_map		map;
-	t_tex		tex[7];
-	t_color		floor;
-	t_color		ceiling;
-	bool		map_started;
-	t_player	player;
-	t_key		key;
-	t_wand		wand;
-	int			mouse_active;
-	void		*mlx;
-	void		*win;
-	t_img		screen;
+	t_map			map;
+	t_tex			tex[7];
+	t_color			floor;
+	t_color			ceiling;
+	bool			map_started;
+	t_player		player;
+	t_key			key;
+	t_wand			wand;
+	int				mouse_active;
+	void			*mlx;
+	void			*win;
+	t_img			screen;
+	t_light_cache	light;
 }	t_game;
 
 void	init_game(t_game *game);

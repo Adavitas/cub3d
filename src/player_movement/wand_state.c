@@ -96,4 +96,5 @@ void	update_wand(t_game *game)
 	else if (game->wand.state == WAND_TURNING_ON
 		|| game->wand.state == WAND_TURNING_OFF)
 		update_wand_turn(&game->wand);
+	update_wand_light(game);
 }

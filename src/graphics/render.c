@@ -132,6 +132,7 @@ void	render_frame(t_game *game)
 	t_ray	ray;
 	int		x;
 
+	prepare_wand_light(game);
 	x = 0;
 	while (x < WIN_W)
 	{

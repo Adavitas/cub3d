@@ -70,11 +70,16 @@ int		rgb_to_int(int r, int g, int b);
 int		apply_fog(int color, float distance, float max_dist);
 int		apply_wand_fog(t_game *game, int color, float distance, int y);
 int		apply_wand_sky(t_game *game, int color, int y);
+void	prepare_wand_light(t_game *game);
 int		light_clamp_channel(int value);
 float	light_clamp_float(float value, float min, float max);
 float	wand_state_light(t_game *game);
 int		add_warm_light(int color, float power);
 int		sample_tex_bilinear(t_tex *tex, float fx, float fy);
+int		is_wand_transparent(int color);
+void	draw_wand_unscaled(t_game *game, t_tex *frame, int *pos,
+			int *clip);
+void	draw_wand_scaled(t_game *game, t_tex *frame, int *pos, int *clip);
 
 /* minimap.c + minimap_utils.c — top-left minimap overlay */
 void	draw_minimap(t_game *game);

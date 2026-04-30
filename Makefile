@@ -43,7 +43,8 @@ PLAYER_SRC = src/player_movement/collision.c \
 			 src/player_movement/update_player.c \
 			 src/player_movement/mouse_rotate.c \
 			 src/player_movement/door.c \
-			 src/player_movement/wand_state.c
+			 src/player_movement/wand_state.c \
+			 src/player_movement/wand_light.c
 
 GRAPHICS_SRC = src/graphics/init_mlx.c \
 			 src/graphics/close_game.c \
@@ -55,6 +56,7 @@ GRAPHICS_SRC = src/graphics/init_mlx.c \
 			 src/graphics/render_light.c \
 			 src/graphics/render_light_utils.c \
 			 src/graphics/wand.c \
+			 src/graphics/wand_draw_utils.c \
 			 src/graphics/wand_resources.c \
 			 src/graphics/wand_cleanup.c \
 			 src/graphics/minimap.c \
@@ -96,7 +98,7 @@ libft:
 mlx:
 	@$(MAKE) -C libraries/minilibx-linux
 
-%.o: %.c
+%.o: %.c includes/game.h includes/player.h includes/raycast.h includes/parse.h
 	@echo "$(YELLOW)Compiling $<...$(RESET)"
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 

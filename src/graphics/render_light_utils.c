@@ -32,15 +32,7 @@ float	light_clamp_float(float value, float min, float max)
 
 float	wand_state_light(t_game *game)
 {
-	if (game->wand.state == WAND_ON)
-		return (1.0f);
-	if (game->wand.state == WAND_TURNING_ON)
-		return ((float)game->wand.frame_id
-			/ (float)WAND_FRAME_TURN_3);
-	if (game->wand.state == WAND_TURNING_OFF)
-		return ((float)game->wand.frame_id
-			/ (float)WAND_FRAME_TURN_3);
-	return (0.0f);
+	return (light_clamp_float(game->wand.light_level, 0.0f, 1.0f));
 }
 
 int	add_warm_light(int color, float power)
@@ -49,6 +41,8 @@ int	add_warm_light(int color, float power)
 	int	g;
 	int	b;
 
+	if (power <= 0.0f)
+		return (color);
 	r = ((color >> 16) & 255) + (int)(WAND_LIGHT_R * power);
 	g = ((color >> 8) & 255) + (int)(WAND_LIGHT_G * power);
 	b = (color & 255) + (int)(WAND_LIGHT_B * power);

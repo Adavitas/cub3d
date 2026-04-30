@@ -64,5 +64,6 @@ void	mouse_rotate(t_game *game);
 void	toggle_door(t_game *game);
 void	toggle_wand(t_game *game);
 void	update_wand(t_game *game);
+void	update_wand_light(t_game *game);
 
 #endif

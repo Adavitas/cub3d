@@ -77,6 +77,7 @@ int	init_wand(t_game *game)
 	ft_bzero(&game->wand, sizeof(t_wand));
 	game->wand.state = WAND_OFF;
 	game->wand.frame_id = WAND_FRAME_OFF;
+	game->wand.light_level = 0.0f;
 	game->wand.last_x = game->player.x;
 	game->wand.last_y = game->player.y;
 	if (!set_wand_paths(&game->wand))

@@ -2,13 +2,19 @@
 
 ## Feature Overview
 
-The wand is a first-person HUD overlay with a lighter-style warm room
+The wand is a top-half first-person HUD overlay with a lighter-style warm room
 illumination effect. Press `F` to raise or lower it. Door interaction remains
 on `R`.
 
 The feature has four runtime states: off, turning on, on, and turning off. The
 wand is always visible as a HUD item; `WAND_OFF` draws the idle-off frame while
 leaving the lighter illumination disabled.
+
+The current art is held from the right-hand side. The lower shaft is
+intentionally cropped by the bottom of the screen so it feels like it continues
+off-screen instead of floating above the HUD. The off frame is lowered and
+slightly left-inclined, the turn frames raise the wand, and the on frames are
+straighter and more upright.
 
 ## Why Wand Assets Are Separate From World Textures
 
@@ -25,6 +31,7 @@ out-of-range `game->tex[7]` index.
 - `includes/raycast.h`
 - `src/player_movement/update_player.c`
 - `src/player_movement/wand_state.c`
+- `src/player_movement/wand_light.c`
 - `src/graphics/init_mlx.c`
 - `src/graphics/close_game.c`
 - `src/graphics/mlx_cleanup.c`
@@ -32,6 +39,7 @@ out-of-range `game->tex[7]` index.
 - `src/graphics/render_light.c`
 - `src/graphics/render_light_utils.c`
 - `src/graphics/wand.c`
+- `src/graphics/wand_draw_utils.c`
 - `src/graphics/wand_resources.c`
 - `src/graphics/wand_cleanup.c`
 - `src/clean_up/free_game.c`
@@ -58,7 +66,14 @@ auto-repeat does not repeatedly toggle the state. Extra presses during a turn
 animation are ignored because `toggle_wand()` only acts from `WAND_OFF` or
 `WAND_ON`.
 
+The smooth transition fix is `wand.light_level`, which is separate from
+`frame_id`. Sprite animation still advances every `WAND_TURN_TICKS`, but
+lighting eases toward its target by `1.0f / (WAND_TURN_TICKS * 3.0f)` each
+update. That keeps room brightness from snapping between the three turn frames.
+
 ## Asset Filenames
+
+The same six XPM filenames are required:
 
 - `./textures/wand/wand_off_idle.xpm`
 - `./textures/wand/wand_turn_1.xpm`
@@ -67,6 +82,14 @@ animation are ignored because `toggle_wand()` only acts from `WAND_OFF` or
 - `./textures/wand/wand_on_idle_a.xpm`
 - `./textures/wand/wand_on_idle_b.xpm`
 
+The current art is `240x320` for every frame and `WAND_SCALE` is `1`, so the
+HUD draw path samples exactly one source pixel per destination pixel. At
+`1280x720`, `get_wand_pos()` places the wand at
+`(WIN_W - 240) / 2 + WAND_X_OFFSET` and
+`WIN_H - 320 - WAND_BOTTOM_MARGIN + WAND_Y_OFFSET`, plus movement bob offsets.
+With the current constants, the lower shaft is intentionally cropped by the
+bottom of the screen.
+
 ## Render Order
 
 The frame loop updates movement, mouse rotation, and wand animation before
@@ -74,13 +97,27 @@ rendering. `render_frame()` draws the sky, walls, and floor into
 `game->screen`, draws the minimap, draws the wand HUD overlay, then presents
 the completed buffer with `mlx_put_image_to_window()`.
 
+`draw_wand()` has a clipped unscaled path for `WAND_SCALE == 1`. It computes the
+visible source rectangle once, caches frame and screen strides, skips keyed
+pixels, and writes directly into `game->screen`. The older scaled per-pixel path
+remains only as a fallback if `WAND_SCALE` is raised again.
+
 ## Transparent Blit Behavior
 
-`draw_wand()` composites into the off-screen `game->screen` buffer. The source
-XPM color key is magenta, configured by `WAND_TRANSPARENT_COLOR`. The blitter
-uses `(color & 0x00FFFFFF) == WAND_TRANSPARENT_COLOR`, so any unused high byte
-from MLX does not affect transparency. Destination writes are bounds-checked
-before touching `game->screen.addr`.
+`draw_wand()` composites into the off-screen `game->screen` buffer. The current
+XPM files use `None` for transparent pixels, and the blitter also supports the
+old magenta `#FF00FF` key through `WAND_TRANSPARENT_COLOR`.
+
+The pink artifact fix is two-part: regenerated wand assets avoid baked glow or
+JPEG-style magenta fringe pixels, and `is_wand_transparent()` skips exact
+magenta, MLX/XPM `None` pixels with the high byte set, and near-magenta pixels
+where red is at least `WAND_KEY_R_MIN`, green is at most `WAND_KEY_G_MAX`, and
+blue is at least `WAND_KEY_B_MIN`.
+
+Because XPM color-key transparency has no alpha blending, do not bake soft glow
+halos over a magenta background. Those pixels become visible pink or purple
+edges at runtime. The wand tip should stay solid art pixels, or a small glow can
+be drawn procedurally later.
 
 ## Bobbing Logic
 
@@ -93,22 +130,35 @@ advancing.
 ## Lighting Logic
 
 The lighter effect extends the existing fog path only. Walls and floor use
-`apply_wand_fog()`, which first applies the normal distance fog and then adds a
-warm local lift based on wand state, wall/floor distance, and vertical
-screen-space falloff. The sky uses `apply_wand_sky()` with a softer warm lift.
-There are no real dynamic shadows or extra light rays.
+`apply_wand_fog()`, which uses values cached by `prepare_wand_light()` at the
+start of `render_frame()`. The cache stores the current 0.0 to 1.0 light level,
+fog distance, ambient brightness, sky power, and `screen_falloff[WIN_H]` for the
+frame. Per-pixel wall and floor lighting then reuses those cached values instead
+of recalculating wand state and vertical falloff for every shaded pixel.
 
-When the wand is off, `wand_state_light()` returns zero. That leaves wall,
-floor, and sky colors at the original fog/texture result while the off-idle HUD
-frame remains visible.
+When the wand is off, the world is intentionally darker: nearby surfaces keep
+some readable ambient light, while distant walls and floor fall into shorter,
+darker fog. During turn-on and turn-off, the same wand light value ramps the
+fog distance, ambient brightness, and warm lift smoothly. When the wand is on,
+nearby walls and floor get a stronger warm boost while far surfaces remain
+darker.
+
+The sky uses `apply_wand_sky()` with the same ambient lerp and a softer warm
+lift controlled by `WAND_SKY_POWER`. There are no real dynamic shadows or extra
+light rays.
+
+The minimap and wand HUD are drawn after the sky, walls, and floor are shaded,
+so the darker world lighting does not darken either overlay.
 
 ## Tunable Constants
 
 The main knobs live in `includes/game.h`:
 
 - `WAND_FRAME_COUNT`
-- `WAND_SCALE`
-- `WAND_BOTTOM_MARGIN`
+- `WAND_SCALE` (`1` for the current `240x320` art)
+- `WAND_BOTTOM_MARGIN` (`24`)
+- `WAND_X_OFFSET` (`120`)
+- `WAND_Y_OFFSET` (`24`)
 - `WAND_TURN_TICKS`
 - `WAND_FLICKER_TICKS`
 - `WAND_BOB_SPEED`
@@ -116,8 +166,15 @@ The main knobs live in `includes/game.h`:
 - `WAND_BOB_Y`
 - `WAND_BOB_RETURN`
 - `WAND_MOVE_EPSILON`
-- `WAND_TRANSPARENT_COLOR`
-- `RENDER_FOG_DIST`
+- `WAND_TRANSPARENT_COLOR` (`0x00FF00FF`)
+- `WAND_KEY_R_MIN` (`210`)
+- `WAND_KEY_G_MAX` (`90`)
+- `WAND_KEY_B_MIN` (`210`)
+- `WAND_LIGHT_MIN`
+- `RENDER_DARK_FOG_DIST`
+- `RENDER_LIT_FOG_DIST`
+- `WAND_DARK_AMBIENT`
+- `WAND_LIT_AMBIENT`
 - `WAND_LIGHT_RANGE`
 - `WAND_LIGHT_POWER`
 - `WAND_LIGHT_CENTER_Y`
@@ -145,34 +202,54 @@ calls `free_game()` for the remaining parsed map and path allocations.
 ## Known Limitations
 
 - The HUD uses fixed pixel scaling for the current `1280x720` window.
-- Transparency is color-key based, not alpha blended.
-- The lighter effect is a stylized fog/brightness lift, not dynamic shadows.
+- Transparency is still color-key based, not alpha blended; near-magenta
+  skipping is a cleanup guard for borders, not real alpha support.
+- Wand-off darkness and wand-on warmth are stylized fog, ambient, and
+  brightness lifts, not physical lighting or dynamic shadows.
 - Wand art is loaded from XPM files only.
-- Animation timing is frame-count based, not time-delta based.
+- Sprite animation timing is frame-count based, not time-delta based.
 
 ## How To Replace The Art Safely
 
 Keep the same six filenames in `./textures/wand/` unless you also update
-`get_wand_path()` in `src/graphics/wand_resources.c`. Preserve magenta
-`#FF00FF` for transparent pixels or update `WAND_TRANSPARENT_COLOR` to match
-the new key. Keep dimensions small enough for `WAND_SCALE` and
-`WAND_BOTTOM_MARGIN` to fit on screen. After replacing art, run `make` so MLX
-loads every frame and run the manual checklist below.
+`get_wand_path()` in `src/graphics/wand_resources.c`.
+
+Future asset-generation rules:
+
+- Generate from PNG or clean source art, not JPEG.
+- Prefer XPM `None` transparency for the background.
+- If using a color key, keep it exact `#FF00FF`; do not antialias or blur into
+  the keyed background.
+- Do not bake translucent glow onto transparent/keyed pixels.
+- Keep all six frames the same dimensions.
+- If dimensions change from `240x320`, retune `WAND_SCALE`,
+  `WAND_BOTTOM_MARGIN`, `WAND_X_OFFSET`, and `WAND_Y_OFFSET`.
+- Keep `WAND_SCALE == 1` unless the replacement art is intentionally authored
+  for nearest-neighbor scaling; larger scales use the slower fallback path.
+
+After replacing art, run `make` so MLX loads every frame and run the manual
+checklist below.
 
 ## Manual Test Checklist
 
 - Run `make`.
 - Run `norminette` on changed `.c` and `.h` files.
 - Launch a valid map.
-- Confirm wand-off view shows `wand_off_idle.xpm` without warm lighting.
+- Confirm the wand is not blocky or visibly pixelated.
+- Confirm there is no pink border around the wand.
+- Confirm wand-off view shows `wand_off_idle.xpm` and the world is darker.
 - Press `F` once and confirm the three turn-on frames play in order.
 - Hold `F` and confirm key repeat does not toggle repeatedly.
 - Press `F` again after the wand is on and confirm turn-off frames play in
   reverse.
 - Walk forward and strafe; confirm bob/sway follows actual movement.
 - Walk into a wall; confirm blocked movement does not advance bob.
-- Confirm warm lighting appears on walls and floor while the wand is on.
-- Confirm the sky gets only a softer warm lift.
+- Confirm the room brightens during the turn-on animation.
+- Confirm stronger warm lighting appears on nearby walls and floor while the
+  wand is on.
+- Confirm far walls and floor remain darker than nearby surfaces.
+- Confirm the sky gets only a softer ambient and warm lift.
+- Confirm the minimap and wand HUD remain readable and are not darkened.
 - Confirm `R` still opens and closes doors.
 - Confirm the minimap is drawn before the wand overlay.
 - Close the window or press Escape and confirm the program exits cleanly.
