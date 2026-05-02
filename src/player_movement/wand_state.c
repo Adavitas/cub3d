@@ -26,6 +26,16 @@ void	toggle_wand(t_game *game)
 		game->wand.frame_id = WAND_FRAME_TURN_3;
 		game->wand.anim_tick = 0;
 	}
+	else if (game->wand.state == WAND_TURNING_ON)
+	{
+		game->wand.state = WAND_TURNING_OFF;
+		game->wand.anim_tick = 0;
+	}
+	else if (game->wand.state == WAND_TURNING_OFF)
+	{
+		game->wand.state = WAND_TURNING_ON;
+		game->wand.anim_tick = 0;
+	}
 }
 
 static void	update_wand_bob(t_game *game)

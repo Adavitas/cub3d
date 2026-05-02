@@ -25,11 +25,12 @@ static int	apply_ambient(int color, float ambient)
 			light_clamp_channel(b)));
 }
 
-static void	set_light_falloff(t_game *game)
+static void	set_light_rows(t_game *game)
 {
 	int		y;
 	float	screen_falloff;
 	float	center_y;
+	float	sky_lift;
 
 	center_y = (float)WIN_H * WAND_LIGHT_CENTER_Y;
 	y = 0;
@@ -38,8 +39,13 @@ static void	set_light_falloff(t_game *game)
 		screen_falloff = fabsf((float)y - center_y);
 		screen_falloff = 1.0f - screen_falloff
 			/ ((float)WIN_H * WAND_LIGHT_SCREEN_RANGE);
-		game->light.screen_falloff[y] = light_clamp_float(screen_falloff,
-				0.0f, 1.0f);
+		screen_falloff = light_clamp_float(screen_falloff, 0.0f, 1.0f);
+		game->light.screen_falloff[y] = screen_falloff;
+		game->light.warm_power[y] = game->light.level * screen_falloff
+			* WAND_LIGHT_POWER;
+		sky_lift = (float)y / ((float)WIN_H * 0.5f);
+		sky_lift = light_clamp_float(sky_lift, 0.0f, 1.0f);
+		game->light.sky_row_power[y] = game->light.sky_power * sky_lift;
 		y++;
 	}
 }
@@ -55,8 +61,9 @@ void	prepare_wand_light(t_game *game)
 	game->light.ambient = WAND_DARK_AMBIENT
 		+ (WAND_LIT_AMBIENT - WAND_DARK_AMBIENT) * light;
 	game->light.sky_power = light * WAND_SKY_POWER;
+	game->light.inv_range = 1.0f / WAND_LIGHT_RANGE;
 	if (light > WAND_LIGHT_MIN)
-		set_light_falloff(game);
+		set_light_rows(game);
 }
 
 int	apply_wand_fog(t_game *game, int color, float distance, int y)
@@ -66,28 +73,28 @@ int	apply_wand_fog(t_game *game, int color, float distance, int y)
 
 	color = apply_fog(color, distance, game->light.fog_dist);
 	color = apply_ambient(color, game->light.ambient);
-	if (game->light.level <= WAND_LIGHT_MIN)
+	if (game->light.level <= WAND_LIGHT_MIN
+		|| distance >= WAND_LIGHT_RANGE)
 		return (color);
-	dist_falloff = 1.0f - distance / WAND_LIGHT_RANGE;
-	dist_falloff = light_clamp_float(dist_falloff, 0.0f, 1.0f);
+	dist_falloff = 1.0f - distance * game->light.inv_range;
 	if (dist_falloff <= 0.0f)
 		return (color);
 	dist_falloff = dist_falloff * dist_falloff;
-	power = game->light.level * dist_falloff
-		* game->light.screen_falloff[y] * WAND_LIGHT_POWER;
+	power = dist_falloff * game->light.warm_power[y];
+	if (power <= WAND_LIGHT_MIN)
+		return (color);
 	return (add_warm_light(color, power));
 }
 
 int	apply_wand_sky(t_game *game, int color, int y)
 {
 	float	power;
-	float	lift;
 
 	color = apply_ambient(color, game->light.ambient);
 	if (game->light.level <= WAND_LIGHT_MIN)
 		return (color);
-	lift = (float)y / ((float)WIN_H * 0.5f);
-	lift = light_clamp_float(lift, 0.0f, 1.0f);
-	power = game->light.sky_power * lift;
+	power = game->light.sky_row_power[y];
+	if (power <= WAND_LIGHT_MIN)
+		return (color);
 	return (add_warm_light(color, power));
 }

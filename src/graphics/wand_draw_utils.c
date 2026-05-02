@@ -30,6 +30,9 @@ int	is_wand_transparent(int color)
 	if (r >= WAND_KEY_R_MIN && g <= WAND_KEY_G_MAX
 		&& b >= WAND_KEY_B_MIN)
 		return (1);
+	if (r > WAND_PINK_R_MIN && b > WAND_PINK_B_MIN
+		&& r > g + WAND_PINK_RGAP && b > g + WAND_PINK_BGAP)
+		return (1);
 	return (0);
 }
 

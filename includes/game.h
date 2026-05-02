@@ -52,6 +52,10 @@
 # define WAND_KEY_R_MIN 210
 # define WAND_KEY_G_MAX 90
 # define WAND_KEY_B_MIN 210
+# define WAND_PINK_R_MIN 90
+# define WAND_PINK_B_MIN 75
+# define WAND_PINK_RGAP 30
+# define WAND_PINK_BGAP 25
 # define WAND_LIGHT_MIN 0.001f
 # define RENDER_DARK_FOG_DIST 8.0f
 # define RENDER_LIT_FOG_DIST 18.0f
@@ -113,7 +117,10 @@ typedef struct s_light_cache
 	float	fog_dist;
 	float	ambient;
 	float	sky_power;
+	float	inv_range;
 	float	screen_falloff[WIN_H];
+	float	warm_power[WIN_H];
+	float	sky_row_power[WIN_H];
 }	t_light_cache;
 
 typedef struct s_game

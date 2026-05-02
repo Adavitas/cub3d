@@ -14,6 +14,7 @@
 
 static void	setup_hooks_and_loop(t_game *game)
 {
+	mlx_do_key_autorepeatoff(game->mlx);
 	mlx_hook(game->win, 2, 1L << 0, (int (*)())key_press, game);
 	mlx_hook(game->win, 3, 1L << 1, (int (*)())key_release, game);
 	mlx_hook(game->win, 4, 1L << 2, (int (*)())mouse_toggle, game);

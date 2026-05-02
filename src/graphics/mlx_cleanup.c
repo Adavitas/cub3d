@@ -32,6 +32,7 @@ void	destroy_mlx_resources(t_game *game)
 {
 	if (!game->mlx)
 		return ;
+	mlx_do_key_autorepeaton(game->mlx);
 	destroy_world_images(game);
 	destroy_wand_images(game);
 	if (game->screen.img)

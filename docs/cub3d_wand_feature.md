@@ -61,15 +61,19 @@ out-of-range `game->tex[7]` index.
 - `WAND_TURNING_OFF`: plays the turn frames in reverse and returns to
   `WAND_OFF`.
 
-`F` input is latched with `game->key.f`, so holding the key through X11
-auto-repeat does not repeatedly toggle the state. Extra presses during a turn
-animation are ignored because `toggle_wand()` only acts from `WAND_OFF` or
-`WAND_ON`.
+MiniLibX key auto-repeat is disabled while the game is running and restored
+during MLX cleanup. `F` input is also latched with `game->key.f`, so holding the
+key does not repeatedly toggle the state. Pressing `F` during
+`WAND_TURNING_ON` reverses into `WAND_TURNING_OFF`, and pressing it during
+`WAND_TURNING_OFF` reverses into `WAND_TURNING_ON`. The current turn frame is
+kept, so the visual transition changes direction without restarting from the
+endpoints.
 
 The smooth transition fix is `wand.light_level`, which is separate from
 `frame_id`. Sprite animation still advances every `WAND_TURN_TICKS`, but
 lighting eases toward its target by `1.0f / (WAND_TURN_TICKS * 3.0f)` each
-update. That keeps room brightness from snapping between the three turn frames.
+update. Rapid `F` reversals fade from the current `light_level` instead of
+snapping to an endpoint.
 
 ## Asset Filenames
 
@@ -108,11 +112,15 @@ remains only as a fallback if `WAND_SCALE` is raised again.
 XPM files use `None` for transparent pixels, and the blitter also supports the
 old magenta `#FF00FF` key through `WAND_TRANSPARENT_COLOR`.
 
-The pink artifact fix is two-part: regenerated wand assets avoid baked glow or
-JPEG-style magenta fringe pixels, and `is_wand_transparent()` skips exact
-magenta, MLX/XPM `None` pixels with the high byte set, and near-magenta pixels
-where red is at least `WAND_KEY_R_MIN`, green is at most `WAND_KEY_G_MAX`, and
-blue is at least `WAND_KEY_B_MIN`.
+The pink artifact fix is two-part: wand assets avoid baked glow or JPEG-style
+magenta fringe pixels, and `is_wand_transparent()` skips exact magenta, MLX/XPM
+`None` pixels with the high byte set, near-magenta key pixels, and the broader
+`WAND_PINK_*` purple-fringe range.
+
+The ON idle frames are generated from the same lit base frame. Both contain the
+same bulb/core at the wand tip; `wand_on_idle_b.xpm` changes only a small set of
+warm highlight pixels so the idle animation reads as shine instead of switching
+between bulb and no-bulb art.
 
 Because XPM color-key transparency has no alpha blending, do not bake soft glow
 halos over a magenta background. Those pixels become visible pink or purple
@@ -127,14 +135,23 @@ moved, the bob phase advances from that position delta. If collision blocked
 movement, the position does not change, so bob and sway decay instead of
 advancing.
 
+Movement and keyboard rotation still use fixed per-frame constants:
+`M_SPEED == 0.02` and `ROTATE_SPEED == 0.02`. Frame-time scaling was not added
+because this repo does not include a cub3d subject or allowed-functions file
+that verifies a timing function such as `gettimeofday`. The equal-feel fix for
+wand OFF versus ON therefore comes from reducing the ON render cost so the frame
+rate stays close to the OFF path.
+
 ## Lighting Logic
 
 The lighter effect extends the existing fog path only. Walls and floor use
 `apply_wand_fog()`, which uses values cached by `prepare_wand_light()` at the
 start of `render_frame()`. The cache stores the current 0.0 to 1.0 light level,
-fog distance, ambient brightness, sky power, and `screen_falloff[WIN_H]` for the
-frame. Per-pixel wall and floor lighting then reuses those cached values instead
-of recalculating wand state and vertical falloff for every shaded pixel.
+fog distance, ambient brightness, sky power, inverse light range,
+`screen_falloff[WIN_H]`, `warm_power[WIN_H]`, and `sky_row_power[WIN_H]` for the
+frame. Per-pixel wall, floor, and sky lighting then reuses those cached values
+instead of recalculating wand state, distance constants, and row powers for
+every shaded pixel.
 
 When the wand is off, the world is intentionally darker: nearby surfaces keep
 some readable ambient light, while distant walls and floor fall into shorter,
@@ -170,6 +187,10 @@ The main knobs live in `includes/game.h`:
 - `WAND_KEY_R_MIN` (`210`)
 - `WAND_KEY_G_MAX` (`90`)
 - `WAND_KEY_B_MIN` (`210`)
+- `WAND_PINK_R_MIN`
+- `WAND_PINK_B_MIN`
+- `WAND_PINK_RGAP`
+- `WAND_PINK_BGAP`
 - `WAND_LIGHT_MIN`
 - `RENDER_DARK_FOG_DIST`
 - `RENDER_LIT_FOG_DIST`
@@ -207,7 +228,8 @@ calls `free_game()` for the remaining parsed map and path allocations.
 - Wand-off darkness and wand-on warmth are stylized fog, ambient, and
   brightness lifts, not physical lighting or dynamic shadows.
 - Wand art is loaded from XPM files only.
-- Sprite animation timing is frame-count based, not time-delta based.
+- Movement, keyboard rotation, sprite animation, and light easing are still
+  frame-count based, not time-delta based.
 
 ## How To Replace The Art Safely
 
@@ -221,6 +243,10 @@ Future asset-generation rules:
 - If using a color key, keep it exact `#FF00FF`; do not antialias or blur into
   the keyed background.
 - Do not bake translucent glow onto transparent/keyed pixels.
+- Keep ON idle A/B generated from the same palette style and transparency rules
+  as the turn/off frames.
+- Avoid pink, purple, or magenta tones in visible wand art unless the blitter
+  thresholds are retuned, because those colors may be treated as transparent.
 - Keep all six frames the same dimensions.
 - If dimensions change from `240x320`, retune `WAND_SCALE`,
   `WAND_BOTTOM_MARGIN`, `WAND_X_OFFSET`, and `WAND_Y_OFFSET`.
