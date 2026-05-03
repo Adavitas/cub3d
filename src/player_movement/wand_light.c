@@ -59,6 +59,11 @@ void	update_wand_light(t_game *game)
 	float	target;
 
 	update_sparkle_tick(game);
+	if (game->wand.state == WAND_OFF)
+	{
+		game->wand.light_level = 0.0f;
+		return ;
+	}
 	target = get_light_target(game->wand.state);
 	approach_wand_light(&game->wand, target);
 }

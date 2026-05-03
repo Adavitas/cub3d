@@ -102,21 +102,28 @@ bottom of the screen.
 
 The frame loop updates movement, mouse rotation, and wand animation before
 rendering. `render_frame()` draws the sky, walls, and floor into
-`game->screen`, draws the minimap, draws the wand HUD overlay, draws wand-tip
-sparkles, then presents the completed buffer with `mlx_put_image_to_window()`.
+`game->screen`, draws the minimap, draws a small procedural wand-tip glow,
+draws the wand HUD overlay, draws wand-tip sparkles, then presents the
+completed buffer with `mlx_put_image_to_window()`.
 
 `draw_wand()` has a clipped unscaled path for `WAND_SCALE == 1`. It computes the
 visible source rectangle once, caches frame and screen strides, skips keyed
 pixels, and writes directly into `game->screen`. The older scaled per-pixel path
 remains only as a fallback if `WAND_SCALE` is raised again.
 
+`draw_wand_tip_glow()` runs before the wand blit, so the wand stays crisp in
+front of the glow. It only loops over a small clipped circle around the cached
+wand-tip anchor and uses squared distance instead of per-pixel `sqrtf()`.
+
 `draw_wand_sparkles()` runs after the wand blit and before presenting the frame.
-It draws up to six clipped yellow, orange, and white HUD sparkles near the
+It draws up to nine clipped yellow, orange, and white HUD sparkles near the
 current wand tip when cached `game->light.level` is above `WAND_TIP_GLOW_MIN`.
-The sparkle pattern uses the current wand frame, a small `sparkle_tick`, the
-same HUD position offsets, and the existing bob values, but it does not change
-bob, movement, rotation, or world lighting. It does not scan the screen or XPM
-data per frame.
+The current ON motion comes mainly from this procedural sparkle pattern, not
+large differences between `wand_on_idle_a.xpm` and `wand_on_idle_b.xpm`. The
+sparkle pattern uses the current wand frame, a small `sparkle_tick`, the same
+HUD position offsets, and the existing bob values, but it does not change bob,
+movement, rotation, or world lighting. It does not scan the screen or XPM data
+per frame.
 
 ## Transparent Blit Behavior
 
@@ -130,16 +137,15 @@ magenta fringe pixels, and `is_wand_transparent()` skips exact magenta, MLX/XPM
 `WAND_PINK_*` purple-fringe range.
 
 The ON idle frames are generated from the same lit base frame. Both contain the
-same bulb/core at the wand tip; `wand_on_idle_b.xpm` changes only a small set of
-warm highlight pixels so the idle animation reads as shine instead of switching
-between bulb and no-bulb art. The procedural sparkle overlay provides the moving
-shine, so future ON XPMs should keep the bulb/core stable instead of baking a
-large halo into either frame.
+same bulb/core at the wand tip; `wand_on_idle_b.xpm` may remain very similar to
+`wand_on_idle_a.xpm`. The procedural sparkle overlay provides the moving shine,
+so future ON XPMs should keep the bulb/core stable instead of baking a large
+halo into either frame.
 
 Because XPM color-key transparency has no alpha blending, do not bake soft glow
 halos over a magenta background. Those pixels become visible pink or purple
-edges at runtime. The wand tip should stay solid art pixels, or a small glow can
-be drawn procedurally later.
+edges at runtime. The wand tip should stay solid art pixels, and soft glow
+should stay procedural and tiny.
 
 ## Bobbing Logic
 
@@ -212,6 +218,8 @@ The main knobs live in `includes/game.h`:
 - `WAND_SPARKLE_RADIUS`
 - `WAND_SPARKLE_COUNT`
 - `WAND_TIP_GLOW_MIN`
+- `WAND_TIP_GLOW_RADIUS`
+- `WAND_TIP_GLOW_POWER`
 - `WAND_LIGHT_ON_GAIN`
 - `WAND_LIGHT_OFF_GAIN`
 - `WAND_LIGHT_SNAP`
@@ -236,6 +244,19 @@ The main knobs live in `includes/game.h`:
 - `WAND_LIGHT_G`
 - `WAND_LIGHT_B`
 - `WAND_SKY_POWER`
+
+Current visual sparkle pass values:
+
+- `WAND_SPARKLE_TICKS == 3`
+- `WAND_SPARKLE_RADIUS == 3`
+- `WAND_SPARKLE_COUNT == 9`
+- `WAND_TIP_GLOW_MIN == 0.04f`
+- `WAND_TIP_GLOW_RADIUS == 16`
+- `WAND_TIP_GLOW_POWER == 0.45f`
+- `WAND_LIGHT_ON_GAIN == 0.34f`
+- `WAND_LIGHT_OFF_GAIN == 0.28f`
+- `WAND_LIGHT_SNAP == 0.02f`
+- `WAND_TURN_TICKS == 6`
 
 ## Cleanup / Destroy Paths
 
@@ -301,13 +322,22 @@ checklist below.
 - Run `make`.
 - Run `norminette` on changed `.c` and `.h` files.
 - Launch a valid map.
+- Start with the wand off.
+- Walk normally and confirm walking/wand bob feels unchanged.
 - Confirm the wand is not blocky or visibly pixelated.
-- Confirm there is no pink border around the wand.
+- Confirm there is no pink border, box, or halo around the wand.
 - Confirm wand-off view shows `wand_off_idle.xpm` and the world is darker.
-- Press `F` once and confirm the three turn-on frames play in order.
+- Press `F` once and confirm OFF to ON feels snappier and smoother.
+- Confirm sparkles appear around the wand top during turn-on.
+- Confirm sparkles visibly move/change pattern while ON.
+- Confirm sparkles are easy to see but not distracting.
+- Confirm the wand no longer feels like one static XPM.
 - Hold `F` and confirm key repeat does not toggle repeatedly.
 - Press `F` again after the wand is on and confirm turn-off frames play in
   reverse.
+- Confirm ON to OFF fades naturally.
+- Confirm sparkles fade during turn-off and disappear once the light level
+  drops below `WAND_TIP_GLOW_MIN`.
 - Walk forward and strafe; confirm bob/sway follows actual movement.
 - Walk into a wall; confirm blocked movement does not advance bob.
 - Confirm the room brightens during the turn-on animation.
@@ -315,6 +345,7 @@ checklist below.
   wand is on.
 - With the wand on, confirm only tiny yellow, orange, and white tip sparkles
   appear and no pink or magenta pixels are visible.
+- Confirm light ON does not create lag.
 - Confirm far walls and floor remain darker than nearby surfaces.
 - Confirm the sky gets only a softer ambient and warm lift.
 - Confirm the minimap and wand HUD remain readable and are not darkened.

@@ -41,39 +41,42 @@ int	get_wand_spark_limit(float level)
 {
 	if (level <= WAND_TIP_GLOW_MIN)
 		return (0);
-	if (level < 0.35f)
-		return (2);
-	if (level < 0.60f)
+	if (level < 0.14f)
 		return (4);
-	if (level < 0.85f)
-		return (5);
+	if (level < 0.35f)
+		return (6);
+	if (level < 0.70f)
+		return (8);
 	return (WAND_SPARKLE_COUNT);
 }
 
 void	set_wand_spark(int *spark, int id, int pattern, int *tip)
 {
-	spark[0] = tip[0] - 8 + (id % 3) * 8;
-	spark[1] = tip[1] - 7 + (id / 3) * 8;
-	spark[2] = 1;
-	spark[3] = 0x00FFF3A0;
-	if (id == 0)
-		spark[2] = WAND_SPARKLE_RADIUS;
-	if (id == 3 || id == 4)
-		spark[2] = 0;
-	if (id == 2 || id == 3)
-		spark[3] = 0x00FFD45A;
-	if (id == 0 || id == 5)
-		spark[3] = 0x00FFFFFF;
-	if (pattern == 1 && id % 2 == 0)
-		spark[0] += 1;
-	else if (pattern == 1)
-		spark[1] -= 1;
-	else if (pattern == 2 && id < 3)
-		spark[1] += 1;
-	else if (pattern == 2)
-		spark[0] -= 1;
-	if ((id == 4 && pattern == 1) || (id == 3 && pattern == 2))
-		spark[2] = 1;
+	static const int	offset[3][9][2] = {
+	{{-22, -26}, {18, -20}, {0, -34}, {-30, -4}, {28, 4},
+	{-8, 12}, {12, -8}, {34, -28}, {4, -14}},
+	{{24, -28}, {-20, -18}, {4, -38}, {32, -2}, {-32, 6},
+	{0, 14}, {-10, -6}, {16, -16}, {30, -34}},
+	{{0, -32}, {-28, -8}, {30, -12}, {10, 12}, {-14, -28},
+	{22, -34}, {-34, -24}, {36, 8}, {-4, -4}}
+	};
+	static const int	radius[3][9] = {
+	{WAND_SPARKLE_RADIUS, 2, 0, 0, 2, 0, 1, 0, 1},
+	{WAND_SPARKLE_RADIUS, 2, 0, 0, 2, 0, 1, 0, -1},
+	{WAND_SPARKLE_RADIUS, 2, 2, 0, 2, 0, 1, 0, 1}
+	};
+	static const int	color[9] = {
+		0x00FFFFFF, 0x00FFD45A, 0x00FFF3A0, 0x00FFB83D,
+		0x00FFF3A0, 0x00FFF3A0, 0x00FFFFFF, 0x00FFD45A,
+		0x00FFFFFF
+	};
+
+	if (pattern < 0 || pattern > 2)
+		pattern = 0;
+	spark[0] = tip[0] + offset[pattern][id][0];
+	spark[1] = tip[1] + offset[pattern][id][1];
+	spark[2] = radius[pattern][id];
+	spark[3] = color[id];
 }
 
 static void	put_spark_pixel(t_game *game, int x, int y, int color)
@@ -88,23 +91,23 @@ static void	put_spark_pixel(t_game *game, int x, int y, int color)
 
 void	draw_wand_spark_cross(t_game *game, int *spark)
 {
-	int		rgb[3];
 	int		i;
 	int		color;
 	float	power;
 
-	power = 0.35f + light_clamp_float(game->light.level, 0.0f, 1.0f)
-		* 0.65f;
-	rgb[0] = (int)(((spark[3] >> 16) & 255) * power);
-	rgb[1] = (int)(((spark[3] >> 8) & 255) * power);
-	rgb[2] = (int)((spark[3] & 255) * power);
-	color = rgb_to_int(light_clamp_channel(rgb[0]),
-			light_clamp_channel(rgb[1]), light_clamp_channel(rgb[2]));
+	if (spark[2] < 0)
+		return ;
+	power = 0.65f + light_clamp_float(game->light.level, 0.0f, 1.0f)
+		* 0.35f;
+	color = rgb_to_int(
+			light_clamp_channel((int)(((spark[3] >> 16) & 255) * power)),
+			light_clamp_channel((int)(((spark[3] >> 8) & 255) * power)),
+			light_clamp_channel((int)((spark[3] & 255) * power)));
 	i = -spark[2];
 	while (i <= spark[2])
 	{
 		put_spark_pixel(game, spark[0] + i, spark[1], color);
-		put_spark_pixel(game, spark[0], spark[1] + i, color);
+		put_spark_pixel(game, spark[0], spark[1] - i, color);
 		i++;
 	}
 }

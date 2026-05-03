@@ -35,6 +35,63 @@ static int	get_wand_tip_pos(t_game *game, int *tip)
 	return (1);
 }
 
+static void	put_tip_glow_pixel(t_game *game, int x, int y, float power)
+{
+	int	color;
+	int	rgb[3];
+	int	stride;
+
+	if (x < 0 || y < 0 || x >= WIN_W || y >= WIN_H)
+		return ;
+	stride = game->screen.line_len / 4;
+	color = game->screen.addr[y * stride + x];
+	rgb[0] = ((color >> 16) & 255) + (int)(120.0f * power);
+	rgb[1] = ((color >> 8) & 255) + (int)(72.0f * power);
+	rgb[2] = (color & 255) + (int)(16.0f * power);
+	game->screen.addr[y * stride + x] = rgb_to_int(
+			light_clamp_channel(rgb[0]), light_clamp_channel(rgb[1]),
+			light_clamp_channel(rgb[2]));
+}
+
+static void	draw_tip_glow_row(t_game *game, int *tip, int y)
+{
+	int		x;
+	int		d2;
+	int		radius2;
+	float	power;
+
+	radius2 = WAND_TIP_GLOW_RADIUS * WAND_TIP_GLOW_RADIUS;
+	x = -WAND_TIP_GLOW_RADIUS;
+	while (x <= WAND_TIP_GLOW_RADIUS)
+	{
+		d2 = x * x + y * y;
+		if (d2 <= radius2)
+		{
+			power = (float)(radius2 - d2) / (float)radius2;
+			power *= game->light.level * WAND_TIP_GLOW_POWER;
+			put_tip_glow_pixel(game, tip[0] + x, tip[1] + y, power);
+		}
+		x++;
+	}
+}
+
+void	draw_wand_tip_glow(t_game *game)
+{
+	int	tip[2];
+	int	y;
+
+	if (game->light.level <= WAND_TIP_GLOW_MIN)
+		return ;
+	if (!get_wand_tip_pos(game, tip))
+		return ;
+	y = -WAND_TIP_GLOW_RADIUS;
+	while (y <= WAND_TIP_GLOW_RADIUS)
+	{
+		draw_tip_glow_row(game, tip, y);
+		y++;
+	}
+}
+
 void	draw_wand_sparkles(t_game *game)
 {
 	int		tip[2];

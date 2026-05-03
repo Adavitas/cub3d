@@ -63,6 +63,7 @@ void	init_dda_y(t_game *game, t_ray *ray);
 /* render.c — drawing wall slices, ceiling, floor */
 void	render_frame(t_game *game);
 void	draw_wand(t_game *game);
+void	draw_wand_tip_glow(t_game *game);
 void	draw_wand_sparkles(t_game *game);
 int		get_wand_spark_anchor(int frame_id, int *anchor);
 int		get_wand_spark_limit(float level);
