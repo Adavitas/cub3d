@@ -144,5 +144,6 @@ void	render_frame(t_game *game)
 	}
 	draw_minimap(game);
 	draw_wand(game);
+	draw_wand_sparkles(game);
 	mlx_put_image_to_window(game->mlx, game->win, game->screen.img, 0, 0);
 }

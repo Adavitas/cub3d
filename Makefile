@@ -57,6 +57,7 @@ GRAPHICS_SRC = src/graphics/init_mlx.c \
 			 src/graphics/render_light_utils.c \
 			 src/graphics/wand.c \
 			 src/graphics/wand_draw_utils.c \
+			 src/graphics/wand_sparkles.c \
 			 src/graphics/wand_resources.c \
 			 src/graphics/wand_cleanup.c \
 			 src/graphics/minimap.c \

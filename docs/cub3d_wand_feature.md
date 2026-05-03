@@ -10,11 +10,12 @@ The feature has four runtime states: off, turning on, on, and turning off. The
 wand is always visible as a HUD item; `WAND_OFF` draws the idle-off frame while
 leaving the lighter illumination disabled.
 
-The current art is held from the right-hand side. The lower shaft is
+The current art enters from the right-hand side. The lower shaft is
 intentionally cropped by the bottom of the screen so it feels like it continues
 off-screen instead of floating above the HUD. The off frame is lowered and
 slightly left-inclined, the turn frames raise the wand, and the on frames are
-straighter and more upright.
+straighter and more upright. A hand was not added in this pass because no
+proper six-frame hand+wand asset pack was present in the repository root.
 
 ## Why Wand Assets Are Separate From World Textures
 
@@ -40,6 +41,7 @@ out-of-range `game->tex[7]` index.
 - `src/graphics/render_light_utils.c`
 - `src/graphics/wand.c`
 - `src/graphics/wand_draw_utils.c`
+- `src/graphics/wand_sparkles.c`
 - `src/graphics/wand_resources.c`
 - `src/graphics/wand_cleanup.c`
 - `src/clean_up/free_game.c`
@@ -98,13 +100,20 @@ bottom of the screen.
 
 The frame loop updates movement, mouse rotation, and wand animation before
 rendering. `render_frame()` draws the sky, walls, and floor into
-`game->screen`, draws the minimap, draws the wand HUD overlay, then presents
-the completed buffer with `mlx_put_image_to_window()`.
+`game->screen`, draws the minimap, draws the wand HUD overlay, draws wand-tip
+sparkles, then presents the completed buffer with `mlx_put_image_to_window()`.
 
 `draw_wand()` has a clipped unscaled path for `WAND_SCALE == 1`. It computes the
 visible source rectangle once, caches frame and screen strides, skips keyed
 pixels, and writes directly into `game->screen`. The older scaled per-pixel path
 remains only as a fallback if `WAND_SCALE` is raised again.
+
+`draw_wand_sparkles()` runs after the wand blit and before presenting the frame.
+It draws a few clipped yellow, orange, and white HUD pixels near the current wand
+tip when cached `game->light.level` is above `WAND_TIP_GLOW_MIN`. The sparkle
+pattern uses the current wand frame, the same HUD position offsets, and the
+existing bob values, but it does not change bob, movement, rotation, or world
+lighting. It does not scan the screen or XPM data per frame.
 
 ## Transparent Blit Behavior
 
@@ -120,7 +129,9 @@ magenta fringe pixels, and `is_wand_transparent()` skips exact magenta, MLX/XPM
 The ON idle frames are generated from the same lit base frame. Both contain the
 same bulb/core at the wand tip; `wand_on_idle_b.xpm` changes only a small set of
 warm highlight pixels so the idle animation reads as shine instead of switching
-between bulb and no-bulb art.
+between bulb and no-bulb art. The procedural sparkle overlay provides the moving
+shine, so future ON XPMs should keep the bulb/core stable instead of baking a
+large halo into either frame.
 
 Because XPM color-key transparency has no alpha blending, do not bake soft glow
 halos over a magenta background. Those pixels become visible pink or purple
@@ -134,6 +145,9 @@ position to `game->wand.last_x` and `game->wand.last_y`. If the player actually
 moved, the bob phase advances from that position delta. If collision blocked
 movement, the position does not change, so bob and sway decay instead of
 advancing.
+
+The walking and bob behavior was intentionally preserved for the sparkle pass.
+`update_wand_bob()` and the `WAND_BOB_*` constants were not retuned.
 
 Movement and keyboard rotation still use fixed per-frame constants:
 `M_SPEED == 0.02` and `ROTATE_SPEED == 0.02`. Frame-time scaling was not added
@@ -191,6 +205,18 @@ The main knobs live in `includes/game.h`:
 - `WAND_PINK_B_MIN`
 - `WAND_PINK_RGAP`
 - `WAND_PINK_BGAP`
+- `WAND_SPARKLE_TICKS`
+- `WAND_SPARKLE_RADIUS`
+- `WAND_SPARKLE_COUNT`
+- `WAND_TIP_GLOW_MIN`
+- `WAND_TIP_TURN1_X`
+- `WAND_TIP_TURN1_Y`
+- `WAND_TIP_TURN2_X`
+- `WAND_TIP_TURN2_Y`
+- `WAND_TIP_TURN3_X`
+- `WAND_TIP_TURN3_Y`
+- `WAND_TIP_ON_X`
+- `WAND_TIP_ON_Y`
 - `WAND_LIGHT_MIN`
 - `RENDER_DARK_FOG_DIST`
 - `RENDER_LIT_FOG_DIST`
@@ -228,6 +254,8 @@ calls `free_game()` for the remaining parsed map and path allocations.
 - Wand-off darkness and wand-on warmth are stylized fog, ambient, and
   brightness lifts, not physical lighting or dynamic shadows.
 - Wand art is loaded from XPM files only.
+- Hand art is not included unless all six replacement hand+wand XPM frames are
+  supplied.
 - Movement, keyboard rotation, sprite animation, and light easing are still
   frame-count based, not time-delta based.
 
@@ -239,6 +267,12 @@ Keep the same six filenames in `./textures/wand/` unless you also update
 Future asset-generation rules:
 
 - Generate from PNG or clean source art, not JPEG.
+- For hand art, provide one combined hand+wand XPM per required filename:
+  `wand_off_idle.xpm`, `wand_turn_1.xpm`, `wand_turn_2.xpm`,
+  `wand_turn_3.xpm`, `wand_on_idle_a.xpm`, and `wand_on_idle_b.xpm`.
+- Treat hand art as a complete matching pack: all six frames must share the
+  same dimensions and alignment, and partial hand replacements should not be
+  mixed with the current handless wand frames.
 - Prefer XPM `None` transparency for the background.
 - If using a color key, keep it exact `#FF00FF`; do not antialias or blur into
   the keyed background.
@@ -273,6 +307,8 @@ checklist below.
 - Confirm the room brightens during the turn-on animation.
 - Confirm stronger warm lighting appears on nearby walls and floor while the
   wand is on.
+- With the wand on, confirm only tiny yellow, orange, and white tip sparkles
+  appear and no pink or magenta pixels are visible.
 - Confirm far walls and floor remain darker than nearby surfaces.
 - Confirm the sky gets only a softer ambient and warm lift.
 - Confirm the minimap and wand HUD remain readable and are not darkened.

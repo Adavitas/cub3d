@@ -63,6 +63,7 @@ void	init_dda_y(t_game *game, t_ray *ray);
 /* render.c — drawing wall slices, ceiling, floor */
 void	render_frame(t_game *game);
 void	draw_wand(t_game *game);
+void	draw_wand_sparkles(t_game *game);
 
 /* render_utils.c — texture sampling and color helpers */
 int		get_tex_color(t_game *game, t_ray *ray, int tex_x, int tex_y);
