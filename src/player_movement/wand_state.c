@@ -47,6 +47,8 @@ static void	update_wand_bob(t_game *game)
 	dx = game->player.x - game->wand.last_x;
 	dy = game->player.y - game->wand.last_y;
 	dist = sqrtf(dx * dx + dy * dy);
+	if (dist > M_SPEED)
+		dist = M_SPEED;
 	game->wand.last_x = game->player.x;
 	game->wand.last_y = game->player.y;
 	if (dist > WAND_MOVE_EPSILON)
