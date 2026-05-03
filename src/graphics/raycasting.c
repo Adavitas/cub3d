@@ -36,7 +36,7 @@ static int	check_hit(t_game *game, t_ray *ray)
 	if (ray->map_y < 0 || ray->map_y >= game->map.height
 		|| ray->map_x < 0 || ray->map_x >= game->map.raw_max_width)
 		return (0);
-	if (game->map.grid[ray->map_y][ray->map_x] == '1')
+	if (is_wall_tile(game->map.grid[ray->map_y][ray->map_x]))
 		return (1);
 	if (game->map.grid[ray->map_y][ray->map_x] == 'D'
 		&& !game->map.door_open[ray->map_y][ray->map_x])
@@ -76,23 +76,17 @@ static void	run_dda(t_game *game, t_ray *ray)
 */
 static void	set_wall_info(t_game *game, t_ray *ray)
 {
+	char	tile;
+
 	if (ray->side == 0)
 		ray->wall_x = game->player.y + ray->perp_wall_dist * ray->ray_dir_y;
 	else
 		ray->wall_x = game->player.x + ray->perp_wall_dist * ray->ray_dir_x;
 	ray->wall_x -= floorf(ray->wall_x);
-	if (ray->map_y >= 0 && ray->map_y < game->map.height
-		&& ray->map_x >= 0 && ray->map_x < game->map.raw_max_width
-		&& game->map.grid[ray->map_y][ray->map_x] == 'D')
-		ray->tex_id = TEX_DOOR;
-	else if (ray->side == 0 && ray->ray_dir_x < 0)
-		ray->tex_id = TEX_WE;
-	else if (ray->side == 0 && ray->ray_dir_x >= 0)
-		ray->tex_id = TEX_EA;
-	else if (ray->side == 1 && ray->ray_dir_y < 0)
+	tile = game->map.grid[ray->map_y][ray->map_x];
+	ray->tex_id = get_wall_tex_id(tile);
+	if (ray->tex_id == TEX_UNKNOWN)
 		ray->tex_id = TEX_NO;
-	else
-		ray->tex_id = TEX_SO;
 }
 
 /*

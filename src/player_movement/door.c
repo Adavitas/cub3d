@@ -43,7 +43,7 @@ void	toggle_door(t_game *game)
 		if (d[0] < 0 || d[1] < 0 || d[1] >= game->map.height
 			|| d[0] >= game->map.raw_max_width)
 			return ;
-		if (game->map.grid[d[1]][d[0]] == '1')
+		if (is_wall_tile(game->map.grid[d[1]][d[0]]))
 			return ;
 		if (game->map.grid[d[1]][d[0]] != 'D')
 			continue ;

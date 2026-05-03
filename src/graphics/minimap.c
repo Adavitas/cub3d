@@ -64,7 +64,7 @@ static int	get_tile_color(t_game *game, int mx, int my)
 
 	wall_col = rgb_to_int(game->ceiling.r / 2 + 40,
 			game->ceiling.g / 2 + 40, game->ceiling.b / 2 + 40);
-	if (game->map.grid[my][mx] == '1')
+	if (is_wall_tile(game->map.grid[my][mx]))
 		return (wall_col);
 	if (game->map.grid[my][mx] == 'D' && !game->map.door_open[my][mx])
 		return (rgb_to_int(180, 120, 40));

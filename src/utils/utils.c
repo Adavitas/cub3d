@@ -45,3 +45,23 @@ int	is_empty(char *line)
 	}
 	return (1);
 }
+
+int	is_wall_tile(char c)
+{
+	return (c == '1' || c == '2' || c == '3' || c == '4');
+}
+
+t_text_id	get_wall_tex_id(char c)
+{
+	if (c == '1')
+		return (TEX_NO);
+	if (c == '2')
+		return (TEX_SO);
+	if (c == '3')
+		return (TEX_WE);
+	if (c == '4')
+		return (TEX_EA);
+	if (c == 'D')
+		return (TEX_DOOR);
+	return (TEX_UNKNOWN);
+}

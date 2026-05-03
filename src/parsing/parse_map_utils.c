@@ -19,7 +19,7 @@ int	valid_map(char *line)
 	i = 0;
 	while (line[i] && line[i] != '\n')
 	{
-		if (line[i] == '1' || line[i] == '0')
+		if (is_wall_tile(line[i]) || line[i] == '0')
 			;
 		else if (line[i] == ' ' || line[i] == '\t')
 			;

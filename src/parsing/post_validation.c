@@ -20,9 +20,11 @@ int	validate_door(t_map *map, int i, int j)
 
 	row_len = ft_strlen(map->grid[i]);
 	has_horizontal = (j > 0 && j < row_len - 1
-			&& map->grid[i][j - 1] == '1' && map->grid[i][j + 1] == '1');
+			&& is_wall_tile(map->grid[i][j - 1])
+			&& is_wall_tile(map->grid[i][j + 1]));
 	has_vertical = (i > 0 && i < map->height - 1
-			&& map->grid[i - 1][j] == '1' && map->grid[i + 1][j] == '1');
+			&& is_wall_tile(map->grid[i - 1][j])
+			&& is_wall_tile(map->grid[i + 1][j]));
 	if (!has_horizontal && !has_vertical)
 	{
 		printf("Door must have walls on opposite sides\n");
@@ -42,7 +44,7 @@ int	validate_chars(t_map *map)
 		j = 0;
 		while (map->grid[i][j])
 		{
-			if (map->grid[i][j] != '0' && map->grid[i][j] != '1'
+			if (map->grid[i][j] != '0' && !is_wall_tile(map->grid[i][j])
 				&& map->grid[i][j] != ' ' && map->grid[i][j] != '\t'
 				&& map->grid[i][j] != 'D')
 			{

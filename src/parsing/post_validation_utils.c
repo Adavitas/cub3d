@@ -38,7 +38,7 @@ int	flood_fill(char **map_copy, int x, int y, int height)
 		return (1);
 	if (map_copy[x][y] == ' ' || map_copy[x][y] == '\t')
 		return (1);
-	if (map_copy[x][y] == '1' || map_copy[x][y] == 'V'
+	if (is_wall_tile(map_copy[x][y]) || map_copy[x][y] == 'V'
 		|| map_copy[x][y] == 'D')
 		return (0);
 	map_copy[x][y] = 'V';

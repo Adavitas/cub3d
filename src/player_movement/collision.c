@@ -18,7 +18,7 @@ int	check_collusion(float new_x, float new_y, t_game *game)
 		|| new_y >= game->map.height
 		|| new_x >= game->map.raw_max_width)
 		return (1);
-	if (game->map.grid[(int)new_y][(int)new_x] == '1')
+	if (is_wall_tile(game->map.grid[(int)new_y][(int)new_x]))
 		return (1);
 	if (game->map.grid[(int)new_y][(int)new_x] == 'D'
 		&& !game->map.door_open[(int)new_y][(int)new_x])

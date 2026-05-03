@@ -100,6 +100,8 @@ char			*creating_new_str(char *line, int start, int end);
 int				dispatch_line(char *line, t_game *game, t_node **raw_map);
 t_color_id		get_color_id(char *line);
 t_text_id		get_tex_id(char *line);
+int				is_wall_tile(char c);
+t_text_id		get_wall_tex_id(char c);
 int				post_validation(t_game *game);
 int				validate_chars(t_map *map);
 int				validate_player(t_game *game);
