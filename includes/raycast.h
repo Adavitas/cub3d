@@ -64,6 +64,10 @@ void	init_dda_y(t_game *game, t_ray *ray);
 void	render_frame(t_game *game);
 void	draw_wand(t_game *game);
 void	draw_wand_sparkles(t_game *game);
+int		get_wand_spark_anchor(int frame_id, int *anchor);
+int		get_wand_spark_limit(float level);
+void	set_wand_spark(int *spark, int id, int pattern, int *tip);
+void	draw_wand_spark_cross(t_game *game, int *spark);
 
 /* render_utils.c — texture sampling and color helpers */
 int		get_tex_color(t_game *game, t_ray *ray, int tex_x, int tex_y);

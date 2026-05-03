@@ -58,8 +58,11 @@
 # define WAND_PINK_BGAP 25
 # define WAND_SPARKLE_TICKS 4
 # define WAND_SPARKLE_RADIUS 2
-# define WAND_SPARKLE_COUNT 4
+# define WAND_SPARKLE_COUNT 6
 # define WAND_TIP_GLOW_MIN 0.15f
+# define WAND_LIGHT_ON_GAIN 0.20f
+# define WAND_LIGHT_OFF_GAIN 0.24f
+# define WAND_LIGHT_SNAP 0.012f
 # define WAND_TIP_TURN1_X 120
 # define WAND_TIP_TURN1_Y 82
 # define WAND_TIP_TURN2_X 142
@@ -115,6 +118,7 @@ typedef struct s_wand
 	t_tex			frame[WAND_FRAME_COUNT];
 	int				frame_id;
 	int				anim_tick;
+	int				sparkle_tick;
 	float			light_level;
 	float			phase;
 	float			bob_x;

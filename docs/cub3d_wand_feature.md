@@ -14,8 +14,8 @@ The current art enters from the right-hand side. The lower shaft is
 intentionally cropped by the bottom of the screen so it feels like it continues
 off-screen instead of floating above the HUD. The off frame is lowered and
 slightly left-inclined, the turn frames raise the wand, and the on frames are
-straighter and more upright. A hand was not added in this pass because no
-proper six-frame hand+wand asset pack was present in the repository root.
+straighter and more upright. A hand was intentionally not added in this pass:
+no hand art is generated, loaded, or drawn by the wand feature.
 
 ## Why Wand Assets Are Separate From World Textures
 
@@ -42,6 +42,7 @@ out-of-range `game->tex[7]` index.
 - `src/graphics/wand.c`
 - `src/graphics/wand_draw_utils.c`
 - `src/graphics/wand_sparkles.c`
+- `src/graphics/wand_sparkles_utils.c`
 - `src/graphics/wand_resources.c`
 - `src/graphics/wand_cleanup.c`
 - `src/clean_up/free_game.c`
@@ -73,9 +74,10 @@ endpoints.
 
 The smooth transition fix is `wand.light_level`, which is separate from
 `frame_id`. Sprite animation still advances every `WAND_TURN_TICKS`, but
-lighting eases toward its target by `1.0f / (WAND_TURN_TICKS * 3.0f)` each
-update. Rapid `F` reversals fade from the current `light_level` instead of
-snapping to an endpoint.
+lighting now approaches its target with separate turn-on and turn-off gains.
+This gives the first part of the fade a quicker response while still easing
+into the endpoint. Rapid `F` reversals fade from the current `light_level`
+instead of snapping to an endpoint.
 
 ## Asset Filenames
 
@@ -109,11 +111,12 @@ pixels, and writes directly into `game->screen`. The older scaled per-pixel path
 remains only as a fallback if `WAND_SCALE` is raised again.
 
 `draw_wand_sparkles()` runs after the wand blit and before presenting the frame.
-It draws a few clipped yellow, orange, and white HUD pixels near the current wand
-tip when cached `game->light.level` is above `WAND_TIP_GLOW_MIN`. The sparkle
-pattern uses the current wand frame, the same HUD position offsets, and the
-existing bob values, but it does not change bob, movement, rotation, or world
-lighting. It does not scan the screen or XPM data per frame.
+It draws up to six clipped yellow, orange, and white HUD sparkles near the
+current wand tip when cached `game->light.level` is above `WAND_TIP_GLOW_MIN`.
+The sparkle pattern uses the current wand frame, a small `sparkle_tick`, the
+same HUD position offsets, and the existing bob values, but it does not change
+bob, movement, rotation, or world lighting. It does not scan the screen or XPM
+data per frame.
 
 ## Transparent Blit Behavior
 
@@ -209,6 +212,9 @@ The main knobs live in `includes/game.h`:
 - `WAND_SPARKLE_RADIUS`
 - `WAND_SPARKLE_COUNT`
 - `WAND_TIP_GLOW_MIN`
+- `WAND_LIGHT_ON_GAIN`
+- `WAND_LIGHT_OFF_GAIN`
+- `WAND_LIGHT_SNAP`
 - `WAND_TIP_TURN1_X`
 - `WAND_TIP_TURN1_Y`
 - `WAND_TIP_TURN2_X`
