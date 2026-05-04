@@ -43,6 +43,8 @@ The engine parses a custom map file, validates textures and colors, initializes 
 
 The current version expands the base cub3D requirements with gameplay and visual features such as interactive doors, map-driven wall texture types, mouse look, darker/lighter room ambience, and a wand with animated lighting and sparkles.
 
+<img width="800" height="449" alt="ezgif com-optimize (1)" src="https://github.com/user-attachments/assets/c6b7b1d5-a000-4264-bd09-f1633b51dac7" />
+
 ---
 
 ## ✨ Features
