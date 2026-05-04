@@ -2,12 +2,13 @@
 
 # 🧊 cub3D
 
-### *A 42 School raycasting project that renders a textured first-person maze with doors, minimap, mouse look, multiple wall types, and a dynamic wand-light mechanic.*
+### *A 42 School raycasting engine that renders a textured first-person maze with doors, minimap, mouse look, map-driven wall textures, and a dynamic wand-light mechanic.*
 
 [![42 School](https://img.shields.io/badge/School-000000?style=for-the-badge&logo=42&logoColor=white)](https://42.fr)
 [![Language](https://img.shields.io/badge/Language-C-blue?style=for-the-badge)](https://en.wikipedia.org/wiki/C_(programming_language))
-[![Norminette](https://img.shields.io/badge/Norminette-passing-success?style=for-the-badge)](https://github.com/42School/norminette)
-![Graphics](https://img.shields.io/badge/Graphics-MiniLibX-orange?style=for-the-badge)
+[![Graphics](https://img.shields.io/badge/Graphics-MiniLibX-orange?style=for-the-badge)](https://harm-smits.github.io/42docs/libs/minilibx)
+[![Renderer](https://img.shields.io/badge/Renderer-Raycasting-purple?style=for-the-badge)](https://en.wikipedia.org/wiki/Ray_casting)
+[![Style](https://img.shields.io/badge/Style-Norminette-success?style=for-the-badge)](https://github.com/42School/norminette)
 
 </div>
 
@@ -17,77 +18,159 @@
 
 - [About](#-about)
 - [Features](#-features)
-- [Algorithm](#-algorithm)
+- [Rendering Pipeline](#️-rendering-pipeline)
+- [Map Format](#️-map-format)
+- [Controls](#-controls)
 - [Installation](#-installation)
 - [Usage](#-usage)
-- [Controls & Map Symbols](#-controls--map-symbols)
 - [Project Structure](#-project-structure)
-- [Performance](#-performance)
+- [Rendering Performance](#-rendering-performance)
 - [Error Handling](#️-error-handling)
 - [Make Commands](#️-make-commands)
 - [Testing Examples](#-testing-examples)
-- [Author](#-author)
+- [Authors](#-authors)
 - [License](#-license)
 
 ---
 
 ## 🎯 About
 
-**cub3D** is a 42 School project inspired by classic raycasting engines such as *Wolfenstein 3D*. The goal is to render a first-person 3D view from a 2D `.cub` map using the MiniLibX graphics library.
+**cub3D** is a 42 School graphics project inspired by classic raycasting games such as *Wolfenstein 3D*.  
+The project renders a first-person 3D view from a 2D `.cub` map using **C** and **MiniLibX**.
 
-The project parses a custom map file, validates textures and colors, initializes the player, casts one ray per screen column, and renders textured walls, floor, sky, doors, minimap, and a first-person wand HUD with a lighter-style illumination effect.
+The engine parses a custom map file, validates textures and colors, initializes the player, casts one ray per screen column, and draws a complete frame with textured walls, floor, sky, doors, minimap, and a first-person wand HUD.
 
-The current version also expands the basic cub3D experience with map-driven wall texture types: wall characters `1`, `2`, `3`, and `4` can select different wall textures instead of relying only on north/south/east/west wall direction.
+The current version expands the base cub3D requirements with gameplay and visual features such as interactive doors, map-driven wall texture types, mouse look, darker/lighter room ambience, and a wand with animated lighting and sparkles.
 
 ---
 
 ## ✨ Features
 
-- **Raycasting renderer** using DDA traversal for real-time first-person projection
+- **Classic raycasting renderer** using DDA traversal through a 2D grid
 - **Textured walls, floor, sky, and doors** loaded from XPM files
-- **Multiple wall tile types**: `1`, `2`, `3`, and `4` map to different wall texture slots
-- **Door interaction** with open/closed collision and raycast behavior
+- **Map-driven wall textures** using wall symbols `1`, `2`, `3`, and `4`
+- **Door interaction** with closed-door collision and raycast blocking
 - **First-person wand HUD** with off, turning-on, on, and turning-off states
-- **Dynamic wand lighting** with darker ambience when the wand is off and warmer light when it is on
-- **Procedural wand-tip sparkles** for a small magical shine effect without heavy rendering cost
-- **Minimap overlay** showing walls, doors, player position, and direction
-- **Mouse look toggle** and keyboard rotation support
-- **Strict `.cub` parser** with map validation, RGB validation, texture validation, and flood-fill enclosure checks
-- **Memory cleanup** for map data, textures, MiniLibX images, window, display, and wand resources
+- **Dynamic wand lighting** that darkens the world when off and warms nearby surfaces when on
+- **Procedural wand-tip sparkles** for a lightweight magical shine effect
+- **Minimap overlay** showing walls, doors, player position, and player direction
+- **Keyboard movement**, keyboard rotation, and mouse-look toggle
+- **Strict `.cub` parsing** for textures, colors, map symbols, player start, and wall enclosure
+- **Resource cleanup** for parsed map data, texture paths, MiniLibX images, window, display, and wand assets
 
 ---
 
-## 🧮 Algorithm
+## 🖼️ Rendering Pipeline
 
-The rendering strategy is based on a classic grid raycaster:
+The renderer is built around a classic raycasting pipeline.
 
-### Raycasting Pipeline
+### Raycasting
+
 - Cast one ray for each vertical screen column
 - Convert the screen column into a camera-space ray direction
-- Use DDA traversal to step through the map grid
+- Use DDA traversal to step through the 2D map grid
 - Stop when the ray hits a wall tile or a closed door
 - Compute perpendicular wall distance to avoid fish-eye distortion
 - Project the wall slice height onto the screen
 
 ### Texture Selection
-- Door tiles use the dedicated door texture
-- Wall tiles are selected directly from the map character:
-  - `1` → `TEX_NO`
-  - `2` → `TEX_SO`
-  - `3` → `TEX_WE`
-  - `4` → `TEX_EA`
-- This allows room design to choose wall textures explicitly from the map
+
+Wall texture selection is controlled directly by the map character:
+
+| Map Tile | Texture Slot |
+|----------|--------------|
+| `1` | `NO` |
+| `2` | `SO` |
+| `3` | `WE` |
+| `4` | `EA` |
+| `D` | Door texture |
+
+This means wall visuals are no longer limited to north, south, west, and east boundaries.  
+A level designer can choose the wall texture by placing `1`, `2`, `3`, or `4` directly in the map.
 
 ### Floor, Sky, and Lighting
+
 - The sky texture is sampled by ray angle
-- The floor is rendered using floor casting and bilinear texture sampling
+- The floor is rendered with floor casting
 - Fog and wand lighting are applied to world pixels
-- Wand light values are cached once per frame to avoid repeating expensive calculations per pixel
+- Wand light values are cached once per frame before ray rendering
+- HUD elements are drawn after the 3D world so the minimap and wand remain readable
 
 ### Wand HUD
-- The wand is drawn as a clipped HUD overlay after the 3D world and minimap
+
+- The wand is drawn as a clipped first-person HUD sprite
 - `WAND_OFF`, `WAND_TURNING_ON`, `WAND_ON`, and `WAND_TURNING_OFF` control animation state
-- Procedural sparkles are drawn around the wand tip when the light level is high enough
+- The wand light level is separate from the sprite frame, allowing smoother light transitions
+- Small procedural sparkles are drawn near the wand tip while the wand is active
+
+---
+
+## 🗺️ Map Format
+
+A `.cub` file contains texture paths, floor/ceiling colors, and a map.
+
+### Texture and Color Header
+
+```text
+NO ./textures/wall_ironfold.xpm
+SO ./textures/wall_moria.xpm
+WE ./textures/wall_mithrin.xpm
+EA ./textures/wall_gundabad.xpm
+
+F 135,135,135
+C 70,130,180
+```
+
+### Map Symbols
+
+| Symbol | Meaning |
+|--------|---------|
+| `0` | Empty walkable space |
+| `1` | Solid wall using the `NO` texture slot |
+| `2` | Solid wall using the `SO` texture slot |
+| `3` | Solid wall using the `WE` texture slot |
+| `4` | Solid wall using the `EA` texture slot |
+| `D` | Door tile |
+| `N` | Player start, facing north |
+| `S` | Player start, facing south |
+| `E` | Player start, facing east |
+| `W` | Player start, facing west |
+| Space / Tab | Void outside the playable map |
+
+### Example Map
+
+```text
+111111111
+100000001
+102030401
+1000D0001
+100000001
+111111111
+```
+
+Rules:
+
+- The map must be enclosed by wall tiles
+- Exactly one player start position must exist
+- Doors must be placed between valid opposite wall tiles
+- Invalid characters, missing textures, malformed colors, and open maps are rejected
+
+---
+
+## 🎮 Controls
+
+| Key / Input | Action |
+|-------------|--------|
+| `W` | Move forward |
+| `S` | Move backward |
+| `A` | Strafe left |
+| `D` | Strafe right |
+| `←` | Rotate left |
+| `→` | Rotate right |
+| `Mouse Button 1` | Toggle mouse look |
+| `R` | Open / close door in front of the player |
+| `F` | Toggle wand light on / off |
+| `Esc` | Exit the game |
 
 ---
 
@@ -105,10 +188,16 @@ make
 ```
 
 ### Compilation Flags
-The project is compiled with: `-Wall -Wextra -Werror`
 
-### Dependencies
-This project uses MiniLibX and requires the usual Linux graphical dependencies:
+The project is compiled with:
+
+```text
+-Wall -Wextra -Werror
+```
+
+### Linux Dependencies
+
+MiniLibX requires common X11 development packages:
 
 ```bash
 sudo apt-get install gcc make xorg libxext-dev libbsd-dev
@@ -138,63 +227,6 @@ The program expects exactly one `.cub` file argument:
 ./cub3D <map.cub>
 ```
 
-Example `.cub` texture/color header:
-
-```text
-NO ./textures/walls/wall_1.xpm
-SO ./textures/walls/wall_2.xpm
-WE ./textures/walls/wall_3.xpm
-EA ./textures/walls/wall_4.xpm
-
-F 30,30,40
-C 120,160,220
-```
-
-Example map body:
-
-```text
-111111111
-100000001
-102030401
-1000D0001
-111111111
-```
-
----
-
-## 🎮 Controls & Map Symbols
-
-### Controls
-
-| Key / Input | Action |
-|-------------|--------|
-| `W` | Move forward |
-| `S` | Move backward |
-| `A` | Strafe left |
-| `D` | Strafe right |
-| `←` | Rotate left |
-| `→` | Rotate right |
-| `Mouse Button 1` | Toggle mouse look |
-| `R` | Open / close door in front of the player |
-| `F` | Toggle wand light on / off |
-| `Esc` | Exit the game |
-
-### Map Symbols
-
-| Symbol | Meaning |
-|--------|---------|
-| `0` | Empty walkable space |
-| `1` | Solid wall using `NO` texture slot |
-| `2` | Solid wall using `SO` texture slot |
-| `3` | Solid wall using `WE` texture slot |
-| `4` | Solid wall using `EA` texture slot |
-| `D` | Door tile |
-| `N` | Player start, facing north |
-| `S` | Player start, facing south |
-| `E` | Player start, facing east |
-| `W` | Player start, facing west |
-| Space / Tab | Void outside the playable map |
-
 ---
 
 ## 📂 Project Structure
@@ -214,8 +246,8 @@ cub3d/
 │   ├── big.cub
 │   ├── valid_door.cub
 │   └── invalid_*.cub
-├── 📂 textures/                        # XPM textures and HUD assets
-│   └── wand/                           # Wand HUD animation frames
+├── 📂 textures/                        # XPM wall, floor, sky, door, and HUD textures
+│   └── wand/                           # Wand animation frames
 ├── 📂 libraries/
 │   ├── libft/                          # Custom libft library
 │   ├── get_next_line/                  # Line-reading utility
@@ -230,7 +262,7 @@ cub3d/
 │   │   ├── parse_dispatch.c
 │   │   ├── post_validation.c
 │   │   └── post_validation_utils.c
-│   ├── 📂 player_movement/             # Movement, rotation, doors, wand state
+│   ├── 📂 player_movement/             # Movement, collision, rotation, doors, wand state
 │   │   ├── move.c
 │   │   ├── collision.c
 │   │   ├── update_player.c
@@ -264,32 +296,30 @@ cub3d/
 │   │   ├── init.c
 │   │   └── utils.c
 │   └── main.c                          # Program entry point
-└── 📂 docs/
-    └── cub3d_wand_feature.md           # Wand feature documentation
 ```
 
 ---
 
-## 📊 Performance
+## 📊 Rendering Performance
 
-The renderer is built around a simple and predictable software pipeline:
+The engine uses a software-rendered frame buffer and keeps expensive operations predictable.
 
-| System | Optimization |
-|--------|--------------|
+| System | Approach |
+|--------|----------|
 | Raycasting | One DDA ray per screen column |
-| Wall rendering | Draws only the projected vertical slice for each ray |
-| Floor rendering | Uses floor casting and texture sampling per visible floor pixel |
-| Lighting | Wand light values are prepared once per frame and reused during shading |
-| HUD wand | Uses `WAND_SCALE == 1` and a clipped unscaled draw path |
-| Sparkles | Tiny procedural HUD overlay near the wand tip, not a full-screen effect |
+| Walls | Draw only the projected vertical wall slice |
+| Floor | Floor casting for visible floor pixels |
+| Lighting | Precompute wand light values once per frame |
+| Wand HUD | Use `WAND_SCALE == 1` and a clipped unscaled draw path |
+| Sparkles | Draw only a small number of HUD pixels near the wand tip |
 
-The current window size is `1280x720`. The wand art is drawn as a HUD overlay, so it does not affect collision or ray traversal.
+The wand is a HUD overlay, so it does not affect collision, DDA traversal, or map validation.
 
 ---
 
 ## ⚠️ Error Handling
 
-The program validates multiple failure cases before starting the game:
+The program validates many failure cases before starting the game:
 
 - Wrong argument count
 - Invalid file extension; input must be `.cub`
@@ -302,9 +332,9 @@ The program validates multiple failure cases before starting the game:
 - Multiple player start positions
 - Map not enclosed by walls
 - Door tiles without valid opposite wall support
-- MLX image/window allocation failure
+- MiniLibX image, window, or display allocation failure
 
-Parser and cleanup paths are designed to release allocated memory before exiting on failure.
+Cleanup paths release allocated memory and MiniLibX resources before exiting on failure.
 
 ---
 
@@ -358,9 +388,10 @@ make fclean && make
 
 ---
 
-## 👨‍💻 Author
+## 👨‍💻 Authors
 
-**Aleksandre Davitashvili** (Adavitas) - *42 Student*
+**Aleksandre Davitashvili** (Adavitas) - *42 Student*  
+**Zhibek Zhyrgalbek kyzy** - *42 Student*
 
 [![GitHub](https://img.shields.io/badge/GitHub-Adavitas-181717?style=flat&logo=github)](https://github.com/Adavitas)
 
