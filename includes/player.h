@@ -62,8 +62,5 @@ int		key_release(int key, t_game *game);
 int		mouse_toggle(int button, int x, int y, t_game *game);
 void	mouse_rotate(t_game *game);
 void	toggle_door(t_game *game);
-void	toggle_wand(t_game *game);
-void	update_wand(t_game *game);
-void	update_wand_light(t_game *game);
 
 #endif
