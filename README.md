@@ -9,6 +9,7 @@
 [![Graphics](https://img.shields.io/badge/Graphics-MiniLibX-orange?style=for-the-badge)](https://harm-smits.github.io/42docs/libs/minilibx)
 [![Renderer](https://img.shields.io/badge/Renderer-Raycasting-purple?style=for-the-badge)](https://en.wikipedia.org/wiki/Ray_casting)
 [![Style](https://img.shields.io/badge/Style-Norminette-success?style=for-the-badge)](https://github.com/42School/norminette)
+![Grade](https://img.shields.io/badge/Grade-115%2F100-success?style=for-the-badge)
 
 </div>
 
@@ -391,9 +392,12 @@ make fclean && make
 ## 👨‍💻 Authors
 
 **Aleksandre Davitashvili** (Adavitas) - *42 Student*  
-**Zhibek Zhyrgalbek kyzy** - *42 Student*
 
 [![GitHub](https://img.shields.io/badge/GitHub-Adavitas-181717?style=flat&logo=github)](https://github.com/Adavitas)
+
+**Zhanat Zhyrgalbayeva** (zzhyrgal) - *42 Student*
+
+[![GitHub](https://img.shields.io/badge/GitHub-zhibeeek-181717?style=flat&logo=github)](https://github.com/zhibeeek)
 
 ---
 
